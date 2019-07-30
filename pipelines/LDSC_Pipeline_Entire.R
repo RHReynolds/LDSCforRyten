@@ -13,8 +13,8 @@ arguments <- parse_args(OptionParser(usage = "%prog",
                                      option_list=list(
                                        make_option(c("-g","--GWAS"), default = "all", help = "If select GWASs to be run, use this flag. GWAS names supplied should be the same as their sumstat.gz name (excluding 'sumstat.gz'). Names should be separated by a comma and no spaces. E.g. To run with the schizophrenia GWAS from 2018, write SCZ2018. [default: all GWASs run"),
                                        make_option(c("-b","--baseline_model"), default = "53", help = "If a different baseline is desired for estimation of heritability, call this flag. Choose between: 53, 75, 76, 86 or 97. [default: Empty string]"),
-                                       make_option(c("-ld", "--calculate_LD_alone"), default = FALSE, help = "If user only wants to calculate LD scores for an annotation, argument 'TRUE' must be supplied [default: FALSE]"),
-                                       make_option(c("-h2", "--calculate_h2_alone"), default = FALSE, help = "If user only wants to calculate heritability estimates, argument 'TRUE' must be supplied [default: FALSE]")
+                                       make_option(c("-l", "--calculate_LD_alone"), default = FALSE, help = "If user only wants to calculate LD scores for an annotation, argument 'TRUE' must be supplied [default: FALSE]"),
+                                       make_option(c("-c", "--calculate_h2_alone"), default = FALSE, help = "If user only wants to calculate heritability estimates, argument 'TRUE' must be supplied [default: FALSE]")
                                      )),
                         positional_arguments = 3)
 
