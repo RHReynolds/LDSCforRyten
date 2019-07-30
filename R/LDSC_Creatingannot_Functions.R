@@ -1,14 +1,16 @@
 #---First level code---------------------------------------------------------------------------------------------------------------------####
 #' Function assembling list of SNPs in baseline LD score model
 #'
-#' @param baseline_model Specify the baseline model to be used i.e. 53, 75, 76, 86 or 97 annotation model.
-#' Recommendations for use in cell-type specific analyses from Alkes Price group:
-#' 1. We recommend that for identifying critical tissues/cell-types via P-value of tau,
-#' it is best to use the baseline model, specifically baseline v1.2.
-#' 2. We recommend that for estimating heritability enrichment (i.e., %h2/%SNPs) of any annotation,
-#' including tissue-specific annotations, it is best to use baselineLD v2.2.
+#' @param baseline_model Specify the baseline model to be used i.e. 53, 75, 76,
+#'   86 or 97 annotation model. Recommendations for use in cell-type specific
+#'   analyses from Alkes Price group: 1. We recommend that for identifying
+#'   critical tissues/cell-types via P-value of tau, it is best to use the
+#'   baseline model, specifically baseline v1.2. 2. We recommend that for
+#'   estimating heritability enrichment (i.e., %h2/%SNPs) of any annotation,
+#'   including tissue-specific annotations, it is best to use baselineLD v2.2.
 #'
 #' @return Dataframe of baseline SNPs with BP and CHR.
+#' @export
 #'
 creating_baseline_df <- function(baseline_model = c("53", "75", "76", "86", "97")){
 
@@ -85,6 +87,7 @@ creating_baseline_df <- function(baseline_model = c("53", "75", "76", "86", "97"
 #'
 #' @return List of dataframes with SNPs overlapping between input dataframes and
 #'   query genomic ranges object.
+#' @export
 #'
 
 overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
@@ -142,6 +145,8 @@ overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
 #' @return List of annotations with all SNPs present in the baseline model, in
 #'   addition to a column distinguishing between annotation SNPs present in the
 #'   baseline model (1) and those not found within the baseline model (0).
+#' @export
+#'
 
 overlap_annot_hits_w_baseline <- function(list_of_annotations, BM){
 
@@ -181,6 +186,7 @@ overlap_annot_hits_w_baseline <- function(list_of_annotations, BM){
 #'
 #' @return Create directories representing each of the annotations, with
 #'   .annot.gz files for each of 22 chromosomes.
+#' @export
 #'
 
 create_annot_file_and_export <- function(list_of_annotations, annot_basedir){
@@ -241,6 +247,7 @@ create_annot_file_and_export <- function(list_of_annotations, annot_basedir){
 #' @param Column_w_duplicates Column name in quotation marks.
 #'
 #' @return Original dataframe without duplicated rows.
+#' @export
 #'
 
 remove_duplicates <- function(Dataframe, Column_w_duplicates){
@@ -255,6 +262,7 @@ remove_duplicates <- function(Dataframe, Column_w_duplicates){
 #' @param Column_w_duplicates Column name in quotation marks.
 #'
 #' @return Dataframe with duplicated rows.
+#' @export
 #'
 
 keep_duplicates <- function(Dataframe, Column_w_duplicates){
@@ -273,6 +281,7 @@ keep_duplicates <- function(Dataframe, Column_w_duplicates){
 #'   marks.
 #'
 #' @return GRanges version
+#' @export
 #'
 
 df2GRanges <- function(df, seqname_col, start_col, end_col ) {
@@ -300,6 +309,7 @@ df2GRanges <- function(df, seqname_col, start_col, end_col ) {
 #'   as output column names from biomart queries differs between species.
 #'
 #' @return Dataframe with x bp added to gene start/end.
+#' @export
 #'
 
 AddBPWindow <- function(dataset, windowsize, mouse = NULL){
@@ -330,6 +340,7 @@ AddBPWindow <- function(dataset, windowsize, mouse = NULL){
 #' @param filter Vector of filter to be used for BioMart query.
 #'
 #' @return Original dataframe together with gene positional information.
+#' @export
 #'
 
 AddGenePosDetails.RemoveXandYandMT <- function(dataframe, columnToFilter, mart = 38, attributes, filter){

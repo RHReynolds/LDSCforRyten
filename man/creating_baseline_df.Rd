@@ -7,11 +7,12 @@
 creating_baseline_df(baseline_model = c("53", "75", "76", "86", "97"))
 }
 \arguments{
-\item{baseline_model}{Specify the baseline model to be used i.e. 53, 75, 76, 86 or 97 annotation model.
-Recommendations for use in cell-type specific analyses from Alkes Price group:
-1. We recommend that for identifying critical tissues/cell-types via P-value of tau,
-it is best to use the baseline model, specifically baseline v1.2.
-2. We recommend that for estimating heritability enrichment (i.e., %h2/%SNPs) of any annotation,
+\item{baseline_model}{Specify the baseline model to be used i.e. 53, 75, 76,
+86 or 97 annotation model. Recommendations for use in cell-type specific
+analyses from Alkes Price group: 1. We recommend that for identifying
+critical tissues/cell-types via P-value of tau, it is best to use the
+baseline model, specifically baseline v1.2. 2. We recommend that for
+estimating heritability enrichment (i.e., %h2/%SNPs) of any annotation,
 including tissue-specific annotations, it is best to use baselineLD v2.2.}
 }
 \value{
