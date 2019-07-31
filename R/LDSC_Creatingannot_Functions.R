@@ -100,7 +100,7 @@ overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
     # Convert df to GRanges object
     Subject_GR <-
       list[[i]] %>%
-      df2GRanges(seqname.col = seqname_col, start.col = start_col, end.col = end_col)
+      df2GRanges(seqname_col = seqname_col, start_col = start_col, end_col = end_col)
 
     # Find overlaps
     overlap <- as.data.frame(findOverlaps(query_GR, Subject_GR))
