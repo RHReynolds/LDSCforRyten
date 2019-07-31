@@ -7,12 +7,12 @@
 keep_duplicates(Dataframe, Column_w_duplicates)
 }
 \arguments{
-\item{Dataframe}{Dataframe with columns as gene name and enrichment values.}
+\item{Dataframe}{Dataframe with a column containing duplicated values.}
 
 \item{Column_w_duplicates}{Column name in quotation marks.}
 }
 \value{
-Dataframe with duplicated rows.
+Dataframe with only duplicated rows.
 }
 \description{
 Function for extracting duplicated values in a defined column.

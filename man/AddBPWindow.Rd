@@ -11,7 +11,7 @@ AddBPWindow(dataset, windowsize, mouse = NULL)
 end_position. Check columns names are start_position and end_position for
 human queries.}
 
-\item{windowsize}{Size of window to be added to annotation}
+\item{windowsize}{Size of window to be added to annotation. Enter as integer.}
 
 \item{mouse}{If original genes are from mouse then select "true". Necessary
 as output column names from biomart queries differs between species.}

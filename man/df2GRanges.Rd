@@ -20,7 +20,7 @@ quotation marks.}
 marks.}
 }
 \value{
-GRanges version
+GRanges object with original data from dataframe.
 }
 \description{
 Convert from dataframe to GRanges

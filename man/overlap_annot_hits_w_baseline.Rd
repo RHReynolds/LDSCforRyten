@@ -12,7 +12,7 @@ overlap_annot_hits_w_baseline(list_of_annotations, BM)
 those SNPs that were found to overlap the baseline model using the
 overlap_annot_list() function.}
 
-\item{BM}{Baseline model with CHR, BP, SNP, CM.}
+\item{BM}{Baseline model with columns: CHR, BP, SNP, CM.}
 }
 \value{
 List of annotations with all SNPs present in the baseline model, in

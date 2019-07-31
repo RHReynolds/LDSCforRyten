@@ -49,12 +49,12 @@ Assimilate_H2_results <- function(path_to_results){
 
 #' Function assembling heritability results from LD score regression run with multiple annotations.
 #'
-#' @param path_to_results ist of file paths where .results output from LDSC stored
+#' @param path_to_results List of file paths where .results output from LDSC stored
 #'
-#' @return Dataframe of results together with associated annotations and GWAS.
+#' @return Dataframe of results together with associated annotation names and GWAS.
 #' @export
 #'
-Assimilate.H2.results.multipleannot <- function(path_to_results){
+Assimilate_H2_results_multipleannot <- function(path_to_results){
 
   assimilated.results <- data.frame()
 

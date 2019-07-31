@@ -11,8 +11,8 @@ overlap_annot_list(list, query_GR, seqname_col, start_col, end_col)
 \item{list}{List with dataframes containing genomic regions to be overlapped
 with the query_GR.}
 
-\item{query_GR}{Genomic ranges object with query -- this will typically be
-the SNPs in the baseline model.}
+\item{query_GR}{Genomic ranges object which user wants to query -- this will
+typically be the SNPs in the baseline model.}
 
 \item{seqname_col}{Column name for column in inputted dataframes referencing
 chromosome.}

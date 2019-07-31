@@ -2,8 +2,8 @@
 
 export(AddBPWindow)
 export(AddGenePosDetails_RemoveXandYandMT)
-export(Assimilate.H2.results.multipleannot)
 export(Assimilate_H2_results)
+export(Assimilate_H2_results_multipleannot)
 export(Calculate_H2)
 export(Calculate_LDscore)
 export(Calculate_enrichment_SE_and_logP)

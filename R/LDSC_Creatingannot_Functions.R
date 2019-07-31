@@ -76,8 +76,8 @@ creating_baseline_df <- function(baseline_model = c("53", "75", "76", "86", "97"
 #'
 #' @param list List with dataframes containing genomic regions to be overlapped
 #'   with the query_GR.
-#' @param query_GR Genomic ranges object with query -- this will typically be
-#'   the SNPs in the baseline model.
+#' @param query_GR Genomic ranges object which user wants to query -- this will
+#'   typically be the SNPs in the baseline model.
 #' @param seqname_col Column name for column in inputted dataframes referencing
 #'   chromosome.
 #' @param start_col Column name for column in inputted dataframes referencing
@@ -140,7 +140,7 @@ overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
 #' @param list_of_annotations List of annotation dataframes containing only
 #'   those SNPs that were found to overlap the baseline model using the
 #'   overlap_annot_list() function.
-#' @param BM Baseline model with CHR, BP, SNP, CM.
+#' @param BM Baseline model with columns: CHR, BP, SNP, CM.
 #'
 #' @return List of annotations with all SNPs present in the baseline model, in
 #'   addition to a column distinguishing between annotation SNPs present in the
@@ -243,7 +243,7 @@ create_annot_file_and_export <- function(list_of_annotations, annot_basedir){
 #'
 #' Function for removing duplicates within defined column.
 #'
-#' @param Dataframe Dataframe with columns as gene name and enrichment values.
+#' @param Dataframe Dataframe with a column containing duplicated values.
 #' @param Column_w_duplicates Column name in quotation marks.
 #'
 #' @return Original dataframe without duplicated rows.
@@ -258,10 +258,10 @@ remove_duplicates <- function(Dataframe, Column_w_duplicates){
 #'
 #' Function for extracting duplicated values in a defined column.
 #'
-#' @param Dataframe Dataframe with columns as gene name and enrichment values.
+#' @param Dataframe Dataframe with a column containing duplicated values.
 #' @param Column_w_duplicates Column name in quotation marks.
 #'
-#' @return Dataframe with duplicated rows.
+#' @return Dataframe with only duplicated rows.
 #' @export
 #'
 
@@ -280,7 +280,7 @@ keep_duplicates <- function(Dataframe, Column_w_duplicates){
 #' @param end_col Name of column containing end position. Must be in quotation
 #'   marks.
 #'
-#' @return GRanges version
+#' @return GRanges object with original data from dataframe.
 #' @export
 #'
 
@@ -304,7 +304,7 @@ df2GRanges <- function(df, seqname_col, start_col, end_col ) {
 #' @param dataset Dataframe with columns with gene start_position and
 #'   end_position. Check columns names are start_position and end_position for
 #'   human queries.
-#' @param windowsize Size of window to be added to annotation
+#' @param windowsize Size of window to be added to annotation. Enter as integer.
 #' @param mouse If original genes are from mouse then select "true". Necessary
 #'   as output column names from biomart queries differs between species.
 #'
