@@ -7,7 +7,8 @@
 Assimilate_H2_results(path_to_results)
 }
 \arguments{
-\item{path_to_results}{List of file paths where .results output from LDSC stored}
+\item{path_to_results}{List of file paths where .results output from LDSC
+stored}
 }
 \value{
 Dataframe of results together with annotation name and GWAS.

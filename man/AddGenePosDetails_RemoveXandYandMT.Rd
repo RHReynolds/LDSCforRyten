@@ -2,8 +2,7 @@
 % Please edit documentation in R/LDSC_Creatingannot_Functions.R
 \name{AddGenePosDetails_RemoveXandYandMT}
 \alias{AddGenePosDetails_RemoveXandYandMT}
-\title{Function for extracting human gene positional information and removing X, Y
-and MT chromosomal genes.}
+\title{Add gene positional details}
 \usage{
 AddGenePosDetails_RemoveXandYandMT(dataframe, columnToFilter, mart = 38,
   attributes, filter)

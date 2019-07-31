@@ -9,9 +9,9 @@ convert_z_score(z, one_sided = NULL)
 \arguments{
 \item{z}{Z-score}
 
-\item{one_sided}{Specify whether one-sided or two-sided p-value required.
-If NULL, two-sided test will be used. If one-sided preferred then specify direction of one-sided test.
-"-" for negative, and "+" for positive.}
+\item{one_sided}{Specify whether one-sided or two-sided p-value required. If
+NULL, two-sided test will be used. If one-sided preferred then specify
+direction of one-sided test. "-" for negative, and "+" for positive.}
 }
 \value{
 P-value.

@@ -1,7 +1,8 @@
 #---First level code---------------------------------------------------------------------------------------------------------------------####
 #' Function assembling herirtability results from LD score regression
 #'
-#' @param path_to_results List of file paths where .results output from LDSC stored
+#' @param path_to_results List of file paths where .results output from LDSC
+#'   stored
 #'
 #' @return Dataframe of results together with annotation name and GWAS.
 #' @export
@@ -47,11 +48,14 @@ Assimilate_H2_results <- function(path_to_results){
 
 }
 
-#' Function assembling heritability results from LD score regression run with multiple annotations.
+#' Function assembling heritability results from LD score regression run with
+#' multiple annotations.
 #'
-#' @param path_to_results List of file paths where .results output from LDSC stored
+#' @param path_to_results List of file paths where .results output from LDSC
+#'   stored
 #'
-#' @return Dataframe of results together with associated annotation names and GWAS.
+#' @return Dataframe of results together with associated annotation names and
+#'   GWAS.
 #' @export
 #'
 Assimilate_H2_results_multipleannot <- function(path_to_results){
@@ -142,6 +146,8 @@ Calculate_enrichment_SE_and_logP <- function(df, one_sided){
 
 }
 
+#' Plot S-LDSC H2 enrichment & coefficient per annotation
+#'
 #' Function plotting enrichment, coefficient and coefficient p-value of
 #' annotation, with GWASs facetted.
 #'
@@ -158,7 +164,7 @@ Calculate_enrichment_SE_and_logP <- function(df, one_sided){
 #' @export
 #'
 
-Plot.H2.enrichment.coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour, pvalue.cutoff){
+Plot_H2_enrichment_coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour, pvalue.cutoff){
 
   h2.results <- h2.results %>%
     dplyr::mutate(GWAS = str_replace(GWAS, "PD2018.ex23andMe", "PD2018 ex23andMe"))
@@ -227,6 +233,8 @@ Plot.H2.enrichment.coefficient <- function(h2.results, x.axis, xlab, fill.variab
 
 }
 
+#' Plot S-LDSC coefficient p-value per annotation
+#'
 #' Function plotting coefficient p-value of annotation, with GWASs facetted.
 #'
 #' @param h2.results Dataframe with overall heritability.
@@ -243,7 +251,7 @@ Plot.H2.enrichment.coefficient <- function(h2.results, x.axis, xlab, fill.variab
 #' @export
 #'
 
-Plot.H2.coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour, pvalue.cutoff, show.legend){
+Plot_H2_coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour, pvalue.cutoff, show.legend){
 
   if (show.legend == TRUE) {
 
@@ -306,9 +314,9 @@ Plot.H2.coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour,
 #' Function converting z-score to p-value.
 #'
 #' @param z Z-score
-#' @param one_sided Specify whether one-sided or two-sided p-value required.
-#' If NULL, two-sided test will be used. If one-sided preferred then specify direction of one-sided test.
-#' "-" for negative, and "+" for positive.
+#' @param one_sided Specify whether one-sided or two-sided p-value required. If
+#'   NULL, two-sided test will be used. If one-sided preferred then specify
+#'   direction of one-sided test. "-" for negative, and "+" for positive.
 #'
 #' @return P-value.
 #' @export

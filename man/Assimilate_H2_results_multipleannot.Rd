@@ -2,16 +2,20 @@
 % Please edit documentation in R/LDSC_SummariseOutput_Functions.R
 \name{Assimilate_H2_results_multipleannot}
 \alias{Assimilate_H2_results_multipleannot}
-\title{Function assembling heritability results from LD score regression run with multiple annotations.}
+\title{Function assembling heritability results from LD score regression run with
+multiple annotations.}
 \usage{
 Assimilate_H2_results_multipleannot(path_to_results)
 }
 \arguments{
-\item{path_to_results}{List of file paths where .results output from LDSC stored}
+\item{path_to_results}{List of file paths where .results output from LDSC
+stored}
 }
 \value{
-Dataframe of results together with associated annotation names and GWAS.
+Dataframe of results together with associated annotation names and
+  GWAS.
 }
 \description{
-Function assembling heritability results from LD score regression run with multiple annotations.
+Function assembling heritability results from LD score regression run with
+multiple annotations.
 }

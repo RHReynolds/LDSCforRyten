@@ -330,6 +330,8 @@ AddBPWindow <- function(dataset, windowsize, mouse = NULL){
 
 }
 
+#' Add gene positional details
+#'
 #' Function for extracting human gene positional information and removing X, Y
 #' and MT chromosomal genes.
 #'
