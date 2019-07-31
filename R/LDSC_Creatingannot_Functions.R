@@ -333,7 +333,7 @@ AddBPWindow <- function(dataset, windowsize, mouse = NULL){
 #' Function for extracting human gene positional information and removing X, Y
 #' and MT chromosomal genes.
 #'
-#' @param dataframe Dataframe.
+#' @param dataframe Dataframe with gene names.
 #' @param columnToFilter Name of column in dataframe, which contains gene names.
 #' @param mart Specify genome build. Baseline from LDSC based on hg19/37.
 #' @param attributes Vector of attributes to extract from BioMart.
@@ -343,7 +343,7 @@ AddBPWindow <- function(dataset, windowsize, mouse = NULL){
 #' @export
 #'
 
-AddGenePosDetails.RemoveXandYandMT <- function(dataframe, columnToFilter, mart = 38, attributes, filter){
+AddGenePosDetails_RemoveXandYandMT <- function(dataframe, columnToFilter, mart = 38, attributes, filter){
 
   require(biomaRt)
 
