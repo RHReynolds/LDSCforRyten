@@ -179,12 +179,17 @@ overlap_annot_hits_w_baseline <- function(list_of_annotations, BM){
 
 #' Function to create 22 .annot.gz files for each annotation.
 #'
-#' @param list_of_annotations A list with all annotations that have been
-#'   overlapped with the baseline model.
+#' @param list_of_annotations A named list with all annotations that have been
+#'   overlapped with the baseline model. It is important that annotation names
+#'   do not include an underscore ('_'). If it does, when using the
+#'   Assimilate_H2_results() function anything prior to the last word in the
+#'   annotation name will be removed, due to the way the Assimilate_H2_results()
+#'   function works. Consider using a different separate, such as a full stop or
+#'   colon.
 #' @param annot_basedir Base directory in which files should be created. Do not
 #'   include "/" at the end of the directory name.
 #'
-#' @return Create directories representing each of the annotations, with
+#' @return Create directories representing each of the named annotations, with
 #'   .annot.gz files for each of 22 chromosomes.
 #' @export
 #'

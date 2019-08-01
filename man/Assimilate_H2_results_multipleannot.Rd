@@ -2,14 +2,18 @@
 % Please edit documentation in R/LDSC_SummariseOutput_Functions.R
 \name{Assimilate_H2_results_multipleannot}
 \alias{Assimilate_H2_results_multipleannot}
-\title{Function assembling heritability results from LD score regression run with
-multiple annotations.}
+\title{Assimilate LDSC output from multiple annotations run together.}
 \usage{
 Assimilate_H2_results_multipleannot(path_to_results)
 }
 \arguments{
 \item{path_to_results}{List of file paths where .results output from LDSC
-stored}
+stored. For the function to work (i.e. provide the full name of the
+annotation and the name of the GWAS), it is important that neither the GWAS
+name or the annotation name includes '_'. If it does, anything after the
+first word in the GWAS name will be removed, or anything before the last
+word in the annotation will be removed. Consider using a different
+separator in annotation/GWAS names e.g. a full stop, or colon.}
 }
 \value{
 Dataframe of results together with associated annotation names and
@@ -17,5 +21,7 @@ Dataframe of results together with associated annotation names and
 }
 \description{
 Function assembling heritability results from LD score regression run with
-multiple annotations.
+multiple annotations (i.e. conditional upon one another). In other words, in
+the --ref-ld-chr of 'ldsc' multiple annotations (in addition to baseline) are
+used.
 }

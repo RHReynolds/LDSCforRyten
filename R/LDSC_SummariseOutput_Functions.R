@@ -2,7 +2,12 @@
 #' Function assembling herirtability results from LD score regression
 #'
 #' @param path_to_results List of file paths where .results output from LDSC
-#'   stored
+#'   stored. For the function to work (i.e. provide the full name of the
+#'   annotation and the name of the GWAS), it is important that neither the GWAS
+#'   name or the annotation name includes '_'. If it does, anything after the
+#'   first word in the GWAS name will be removed, or anything before the last
+#'   word in the annotation will be removed. Consider using a different
+#'   separator in annotation/GWAS names e.g. a full stop, or colon.
 #'
 #' @return Dataframe of results together with annotation name and GWAS.
 #' @export
@@ -48,11 +53,20 @@ Assimilate_H2_results <- function(path_to_results){
 
 }
 
+#' Assimilate LDSC output from multiple annotations run together.
+#'
 #' Function assembling heritability results from LD score regression run with
-#' multiple annotations.
+#' multiple annotations (i.e. conditional upon one another). In other words, in
+#' the --ref-ld-chr of 'ldsc' multiple annotations (in addition to baseline) are
+#' used.
 #'
 #' @param path_to_results List of file paths where .results output from LDSC
-#'   stored
+#'   stored. For the function to work (i.e. provide the full name of the
+#'   annotation and the name of the GWAS), it is important that neither the GWAS
+#'   name or the annotation name includes '_'. If it does, anything after the
+#'   first word in the GWAS name will be removed, or anything before the last
+#'   word in the annotation will be removed. Consider using a different
+#'   separator in annotation/GWAS names e.g. a full stop, or colon.
 #'
 #' @return Dataframe of results together with associated annotation names and
 #'   GWAS.

@@ -8,7 +8,12 @@ Assimilate_H2_results(path_to_results)
 }
 \arguments{
 \item{path_to_results}{List of file paths where .results output from LDSC
-stored}
+stored. For the function to work (i.e. provide the full name of the
+annotation and the name of the GWAS), it is important that neither the GWAS
+name or the annotation name includes '_'. If it does, anything after the
+first word in the GWAS name will be removed, or anything before the last
+word in the annotation will be removed. Consider using a different
+separator in annotation/GWAS names e.g. a full stop, or colon.}
 }
 \value{
 Dataframe of results together with annotation name and GWAS.

@@ -189,6 +189,8 @@ Create_GWAS_df <- function(){
     str_replace(".*/", "") %>%
     str_replace(".sumstats.gz", "")
 
+  # Change names of those .sumstats.gz files that include '_', so that output name works with Assimilate_H2_results() function
+  # (i.e. provides full name of the GWAS, otherwise anything after an '_' would be removed)
   Output.prefix[Output.prefix == "ILAE_All_Epi_11.8.14"] <- "EPI2014"
   Output.prefix[Output.prefix == "Epilepsy2018"] <- "EPI2018"
   Output.prefix[Output.prefix == "epipgx_dre_hc"] <- "EPI.Dre.Hc"
