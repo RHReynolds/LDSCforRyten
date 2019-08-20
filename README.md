@@ -30,7 +30,7 @@ Running S-LDSC can be divided into the following steps.
 3. Partitioning heritability by annotation, using the baseline model.
 4. Collating and summarising the output of S-LDSC.
 
-For an example of this process run from end to end, please download the following `r  xfun::embed_file(path = "/home/rreynolds/packages/LDSCforRyten/pipelines/tutorial.html", name = "tutorial.html", text = "html report")`
+For an example of this process run from end to end, please refer to this [tutorial](pipelines/tutorial.html).
 
 ## Scripts <a name="scripts"></a>
 
