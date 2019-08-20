@@ -231,7 +231,6 @@ get_LDSC_fixed_args <- function(Baseline_model = NULL){
   # Fixed paths to python programme and reference files
   fixed_args$ldsc <- "/tools/LDScore-master/ldsc.py"
   fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/1000G_EUR_Phase3_plink/"
-  fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/1000G_Phase3_baseline_v1.1_ldscores_53annot/SNPsinBaselinel2ldscore/"
   fixed_args$regression_weights <- "/data/LDScore/Reference_Files/weights_hm3_no_hla/weights."
   fixed_args$freqfile <- "/data/LDScore/Reference_Files/1000G_Phase3_frq/1000G.EUR.QC."
 
@@ -248,23 +247,31 @@ get_LDSC_fixed_args <- function(Baseline_model = NULL){
 
     # Read in correct baseline model depending on model specified in argument baseline.model
     if (fixed_args$baseline_model_name == "53") {
-      fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/1000G_Phase3_baseline_v1.1_ldscores_53annot/baseline."
+      # Need to overwrite refLD path and weights path, as v1.2 is aligned to GRCh38 and therefore cannot use original reference files.
+      fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/GRCh38/baseline_v1.2/baseline."
+      fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/GRCh38/plink_files/"
+      fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/GRCh38/baseline_v1.2/SNPsinBaselinel2ldscore/"
+      fixed_args$regression_weights <- "/data/LDScore/Reference_Files/GRCh38/weights/weights.hm3_noMHC."
     }
 
     if (fixed_args$baseline_model_name == "75") {
       fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v1.1_ldscores_75annot/baselineLD."
+      fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v1.1_ldscores_75annot/SNPsinBaselinel2ldscore/"
     }
 
     if (fixed_args$baseline_model_name == "76") {
       fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v2.0/baselineLD."
+      fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v2.0/SNPsinBaselinel2ldscore/"
     }
 
     if (fixed_args$baseline_model_name == "86") {
       fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v2.1_ldscores/baselineLD."
+      fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v2.1_ldscores/SNPsinBaselinel2ldscore/"
     }
 
     if (fixed_args$baseline_model_name == "97") {
       fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v2.2_ldscores/baselineLD."
+      fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/1000G_Phase3_baselineLD_v2.2_ldscores/SNPsinBaselinel2ldscore/"
     }
 
   }
