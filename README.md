@@ -1,5 +1,3 @@
----WORK IN PROGRESS---
-
 # S-LDSC for Ryten Lab 
 1. [Installing the package](#install)
 2. [Running S-LDSC](#running)
