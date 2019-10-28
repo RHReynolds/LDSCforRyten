@@ -1,5 +1,3 @@
----WORK IN PROGRESS---
-
 # S-LDSC for Ryten Lab 
 1. [Installing the package](#install)
 2. [Running S-LDSC](#running)
@@ -30,7 +28,7 @@ Running S-LDSC can be divided into the following steps.
 3. Partitioning heritability by annotation, using the baseline model.
 4. Collating and summarising the output of S-LDSC.
 
-For an example of this process run from end to end, please download the following `r  xfun::embed_file(path = "/home/rreynolds/packages/LDSCforRyten/pipelines/tutorial.html", name = "tutorial.html", text = "html report")`
+For an example of this process run from end to end, please refer to this [tutorial](pipelines/tutorial.html).
 
 ## Scripts <a name="scripts"></a>
 
@@ -41,7 +39,7 @@ Script | Description | Author(s)
 [LDSC_SummariseOutput_Functions.R](R/LDSC_SummariseOutput_Functions.R) | Functions that can be used to summarise the output of S-LDSC once pipeline has been run. | RHR
 
 ## Reference files <a name="reference_files"></a>
-- To run S-LDSC requires a number of reference files. On our server these are located in the following directory: `/data/LDScore/Reference_Files/`.
+- To run S-LDSC requires a number of reference files. On our server these are located in the following directory: `/data/LDScore/Reference_Files/`. They are also available via the Alkes lab [repository](https://data.broadinstitute.org/alkesgroup/LDSCORE/), and descriptions of necessary reference files can be found described in the `ldsc` [wiki page](https://github.com/bulik/ldsc/wiki).
 
 ### Baseline models
 - An important decision to make when running S-LDSC is the choice of baseline model. As of August 2019, the Price group recommend the following: 
@@ -52,6 +50,7 @@ Script | Description | Author(s)
 - **IMPORTANT:** All baseline models, except baseline v1.2, are aligned to GRCh37. Baseline v1.2, however, is aligned to GRCh38. This is important, as all sumstat.gz files are generated from summary statistic files based on GRCh37 co-ordinates. According to the following [thread](https://groups.google.com/forum/#!topic/ldsc_users/_wIQrqK57Nc), running GRCh37-based summary statistics with the GRCh38-based baseline v1.2 model should not make much of a difference to the outputted estimates. There is, however, a big difference between running with v1.1 (GRCh37-based) or v1.2. Until conversion of summary stats files from GRCh37 to GRCh38 has occurred, it is recommended to run with baseline v1.2 (despite it being GRCh38 based).
 
 ### Available GWASs
-- Available GWASs can be found in the following directory: `/data/LDScore/GWAS/`
+- Available GWASs on our server can be found in the following directory: `/data/LDScore/GWAS/`
 - For details of these GWASs (including samples numbers and references), please refer to [LDSC_GWAS_details.xlsx](misc/LDSC_GWAS_details.xlsx).
+- Additional GWASs can be downloaded, but must be prepared. Please refer to the `ldsc` [wiki page](https://github.com/bulik/ldsc/wiki) for details on how to prepare GWAS summary statistics for use with `ldsc`.
   
