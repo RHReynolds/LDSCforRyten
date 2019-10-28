@@ -1,6 +1,6 @@
 #' Liftover GWAS from hg19 to hg38
 #'
-#' @param GWAS GWAS with a minimum of 3 columns labelled SNP, CHR and BP. If
+#' @param GWAS GWAS with a minimum of 2 columns CHR and BP. If
 #'   additional columns included these will be preserved.
 #' @param path_to_chain Path to UCSC chain file for transformation from hg19 to
 #'   hg38 coordinates.
@@ -57,6 +57,7 @@ liftover_hg19_to_hg38 <- function(GWAS, path_to_chain){
 #'   dependent on genome build)
 #'
 #' @return GWAS with RS ids.
+#' @export
 
 add_RS_to_GWAS <- function(GWAS, dbSNPref){
 

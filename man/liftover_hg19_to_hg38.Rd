@@ -7,7 +7,7 @@
 liftover_hg19_to_hg38(GWAS, path_to_chain)
 }
 \arguments{
-\item{GWAS}{GWAS with a minimum of 3 columns labelled SNP, CHR and BP. If
+\item{GWAS}{GWAS with a minimum of 2 columns CHR and BP. If
 additional columns included these will be preserved.}
 
 \item{path_to_chain}{Path to UCSC chain file for transformation from hg19 to
