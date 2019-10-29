@@ -64,7 +64,7 @@ add_RS_to_GWAS <- function(GWAS, dbSNPref){
   library(BSgenome)
   library(GenomicRanges)
 
-  # If GWAS CHR column does not have "chr" in name, add to allow liftover
+  # If GWAS CHR column has "chr" in name, remove
   if(str_detect(GWAS$CHR[1], "chr")){
 
     GWAS <- GWAS %>%
