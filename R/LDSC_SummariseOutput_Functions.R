@@ -165,84 +165,108 @@ Calculate_enrichment_SE_and_logP <- function(df, one_sided){
 #' Function plotting enrichment, coefficient and coefficient p-value of
 #' annotation, with GWASs facetted.
 #'
-#' @param h2.results Dataframe with overall heritability.
-#' @param x.axis What variable should be plotted on the x-axis.
-#' @param xlab X-axis name in quotation marks.
-#' @param fill.variable What variable should be used to determine the fill
-#'   colour of bars/points.
-#' @param colour Vector with colours.
-#' @param pvalue.cutoff P-value cutoff after multiple test correction for number
-#'   of annotations and GWASs.
+#' @param h2_results Dataframe with overall heritability.
+#' @param x_axis character. Variable to be plotted on the x-axis.
+#' @param xlab character. X-axis name in quotation marks.
+#' @param fill_variable character. Variable to be used to determine the fill
+#'   colour of bars/points. Default is NULL.
+#' @param colour character vector. If fill_variable not NULL then supply colours
+#'   to be used.
+#' @param pvalue_cutoff numeric. P-value cutoff after multiple test correction
+#'   for number of annotations and GWASs.
 #'
 #' @return Plot
 #' @export
 #'
 
-Plot_H2_enrichment_coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour, pvalue.cutoff){
+Plot_H2_enrichment_coefficient <- function(h2_results, x_axis, xlab, fill_variable = NULL, colour, pvalue_cutoff){
 
-  h2.results <- h2.results %>%
+  fill_variable <- vars(!!!fill_variable)
+
+  h2_results <- h2_results %>%
     dplyr::mutate(GWAS = str_replace(GWAS, "PD2018.ex23andMe", "PD2018 ex23andMe"))
 
-  Enrichment <- ggplot(data = h2.results, aes(x = h2.results %>% .[[x.axis]],
+  Enrichment <- ggplot(data = h2_results, aes(x = h2_results %>% .[[x_axis]],
                                               y = Enrichment)) +
-    geom_col(aes(fill = h2.results %>% .[[fill.variable]]), colour = "black") +
-    geom_hline(aes(yintercept = 1), linetype = "22", size = 0.60) + #No enrichment
-    geom_errorbar(aes(ymin = Enrichment.Lower.SE, ymax = Enrichment.Upper.SE), width = 0.2) +
+    geom_col(aes(fill = if(!is.null(fill_variable)) h2_results %>% .[[fill_variable]] else "arb_colour_cat"),
+             colour = "black") +
+    geom_hline(aes(yintercept = 1),
+               linetype = "22",
+               size = 0.60) + #No enrichment
+    geom_errorbar(aes(ymin = Enrichment.Lower.SE,
+                      ymax = Enrichment.Upper.SE),
+                  width = 0.2) +
     facet_grid(facets = GWAS ~ .) +
     labs(x = xlab, y = expression("Enrichment"), title = "") +
-    theme_bw() + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-                       axis.title = element_text(size = 8, face = "bold"),
-                       plot.title = element_text(size = 10, face = "bold"),
-                       strip.text = element_text(size = 8),
-                       legend.position = "bottom") +
+    theme_bw() +
+    theme(axis.text.x = if(!is.null(fill_variable)) element_blank() else element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
+          axis.ticks.x = element_blank(),
+          axis.title = element_text(size = 8, face = "bold"),
+          plot.title = element_text(size = 10, face = "bold"),
+          strip.text = element_text(size = 8),
+          legend.position = "bottom") +
     scale_fill_manual(guide = guide_legend(
       title.theme = element_text(size = 8, face = "bold", colour = "black", angle = 0),
       label.theme = element_text(size = 7, angle = 0),
       nrow = 1,
       byrow = TRUE),
-      name = element_blank(), values = colour)
+      name = element_blank(),
+      values = if(!is.null(fill_variable)) colour else "#8C8C8C")
 
-  Coefficient_plot <- ggplot(data = h2.results, aes(x = h2.results %>% .[[x.axis]],
-                                                    y = Coefficient)) +
-    geom_col(aes(fill = h2.results %>% .[[fill.variable]]), colour = "black") +
+  Coefficient_plot <- ggplot(data = h2_results,
+                             aes(x = h2_results %>% .[[x_axis]],
+                                 y = Coefficient)) +
+    geom_col(aes(fill = if(!is.null(fill_variable)) h2_results %>% .[[fill_variable]] else "arb_colour_cat"),
+             colour = "black") +
     # geom_hline(aes(yintercept = 1), linetype = "22", size = 0.60) + #No enrichment
-    geom_errorbar(aes(ymin = Coefficient.Lower.SE, ymax = Coefficient.Upper.SE), width = 0.2) +
+    geom_errorbar(aes(ymin = Coefficient.Lower.SE,
+                      ymax = Coefficient.Upper.SE),
+                  width = 0.2) +
     facet_grid(facets = GWAS ~ .) +
     labs(x = xlab, y = expression("Regression coefficient,"~tau*"c"), title = "") +
-    theme_bw() + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-                       axis.title = element_text(size = 8, face = "bold"),
-                       plot.title = element_text(size = 10, face = "bold"),
-                       strip.text = element_text(size = 8),
-                       legend.position = "bottom") +
+    theme_bw() +
+    theme(axis.text.x = if(!is.null(fill_variable)) element_blank() else element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
+          axis.ticks.x = element_blank(),
+          axis.title = element_text(size = 8, face = "bold"),
+          plot.title = element_text(size = 10, face = "bold"),
+          strip.text = element_text(size = 8),
+          legend.position = "bottom") +
     scale_fill_manual(guide = guide_legend(
       title.theme = element_text(size = 8, face = "bold", colour = "black", angle = 0),
       label.theme = element_text(size = 7, angle = 0),
       nrow = 1,
       byrow = TRUE),
-      name = element_blank(), values = colour)
+      name = element_blank(),
+      values = if(!is.null(fill_variable)) colour else "#8C8C8C")
 
-  Coefficient_pvalue_plot <- ggplot(data = h2.results, aes(x = h2.results %>% .[[x.axis]] ,
+  Coefficient_pvalue_plot <- ggplot(data = h2_results, aes(x = h2_results %>% .[[x_axis]] ,
                                                            y = Z_score_logP)) +
-    geom_point(aes(colour = h2.results %>%
-                     .[[fill.variable]]),
-               shape = 19, size = 1.5) +
-    geom_point(data = subset(h2.results, Z_score_logP >= pvalue.cutoff),
-               aes(x = subset(h2.results, Z_score_logP >= pvalue.cutoff) %>% .[[x.axis]]),
-               shape = 1, size = 1.5, stroke = 0.75) +
-    geom_hline(aes(yintercept = pvalue.cutoff), linetype = "77", size = 0.6) + # Bonferroni correct for number of tests
+    geom_point(aes(colour = if(!is.null(fill_variable)) h2_results %>% .[[fill_variable]] else "arb_colour_cat"),
+               shape = 19,
+               size = 1.5) +
+    geom_point(data = subset(h2_results, Z_score_logP >= pvalue_cutoff),
+               aes(x = subset(h2_results, Z_score_logP >= pvalue_cutoff) %>% .[[x_axis]]),
+               shape = 1,
+               size = 1.5,
+               stroke = 0.75) +
+    geom_hline(aes(yintercept = pvalue_cutoff), linetype = "77", size = 0.6) + # Bonferroni correct for number of tests
     facet_grid(facets = GWAS ~ .) +
     labs(x = xlab, y = expression("Coefficient P-value (-log"[1][0]~"p)"), title = "") +
-    theme_bw() + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(),
-                       axis.title = element_text(size = 8, face = "bold"),
-                       plot.title = element_text(size = 10, face = "bold"),
-                       strip.text = element_text(size = 8),
-                       legend.position = "bottom") +
+    theme_bw() +
+    theme(axis.text.x = if(!is.null(fill_variable)) element_blank() else element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
+          axis.ticks.x = element_blank(),
+          axis.title = element_text(size = 8, face = "bold"),
+          plot.title = element_text(size = 10, face = "bold"),
+          strip.text = element_text(size = 8),
+          legend.position = "bottom") +
     scale_colour_manual(guide = FALSE,
-                        name = element_blank(), values = colour)
+                        name = element_blank(),
+                        values = if(!is.null(fill_variable)) colour else "#8C8C8C")
 
   ggarrange(Enrichment, Coefficient_plot, Coefficient_pvalue_plot,
             widths = c(7.5,7.5,10), ncol = 3, nrow = 1,
-            common.legend = TRUE, legend = "bottom"
+            common.legend = if(!is.null(fill_variable)) TRUE else FALSE,
+            legend = if(!is.null(fill_variable)) "bottom" else "none"
   )
 
 }
@@ -251,33 +275,35 @@ Plot_H2_enrichment_coefficient <- function(h2.results, x.axis, xlab, fill.variab
 #'
 #' Function plotting coefficient p-value of annotation, with GWASs facetted.
 #'
-#' @param h2.results Dataframe with overall heritability.
-#' @param x.axis What variable should be plotted on the x-axis.
-#' @param xlab X-axis name in quotation marks.
-#' @param fill.variable What variable should be used to determine the fill
-#'   colour of bars/points.
-#' @param colour Vector with colours.
-#' @param pvalue.cutoff P-value cutoff after multiple test correction for number
-#'   of annotations and GWASs.
-#' @param show.legend TRUE or FALSE depending on it want legend shown
+#' @param h2_results Dataframe with overall heritability.
+#' @param x_axis character. Variable to be plotted on the x-axis.
+#' @param xlab character. X-axis name in quotation marks.
+#' @param fill_variable character. Variable to be used to determine the fill
+#'   colour of bars/points. Default is NULL.
+#' @param colour character vector. If fill_variable not NULL then supply colours
+#'   to be used.
+#' @param pvalue_cutoff numeric. P-value cutoff after multiple test correction
+#'   for number of annotations and GWASs.
+#' @param show_legend logical. Default = FALSE.
 #'
-#' @return Plot
+#'
+#' @return Ggplot of co-efficient p-values.
 #' @export
 #'
 
-Plot_H2_coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour, pvalue.cutoff, show.legend){
+Plot_H2_coefficient <- function(h2_results, x_axis, xlab, fill_variable = NULL, colour, pvalue_cutoff, show_legend = FALSE){
 
-  if (show.legend == TRUE) {
-
-    Coefficient_pvalue_plot <- ggplot(data = h2.results, aes(x = h2.results %>% .[[x.axis]] ,
+    Coefficient_pvalue_plot <- ggplot(data = h2_results, aes(x = h2_results %>% .[[x_axis]] ,
                                                              y = Z_score_logP)) +
-      geom_point(aes(colour = h2.results %>%
-                       .[[fill.variable]]),
-                 shape = 19, size = 1.5) +
-      geom_point(data = subset(h2.results, Z_score_logP >= pvalue.cutoff),
-                 aes(x = subset(h2.results, Z_score_logP >= pvalue.cutoff) %>% .[[x.axis]]),
-                 shape = 1, size = 1.5, stroke = 0.75) +
-      geom_hline(aes(yintercept = pvalue.cutoff), linetype = "77", size = 0.6) + # Bonferroni correct for number of tests
+      geom_point(aes(colour = if(!is.null(fill_variable)) h2_results %>% .[[fill_variable]] else "arb_colour_cat"),
+                 shape = 19,
+                 size = 1.5) +
+      geom_point(data = subset(h2_results, Z_score_logP >= pvalue_cutoff),
+                 aes(x = subset(h2_results, Z_score_logP >= pvalue_cutoff) %>% .[[x_axis]]),
+                 shape = 1,
+                 size = 1.5,
+                 stroke = 0.75) +
+      geom_hline(aes(yintercept = pvalue_cutoff), linetype = "77", size = 0.6) + # Bonferroni correct for number of tests
       facet_grid(facets = GWAS ~ .) +
       labs(x = xlab, y = expression("Coefficient P-value (-log"[1][0]~"p)"), title = "") +
       theme_bw() +
@@ -286,39 +312,11 @@ Plot_H2_coefficient <- function(h2.results, x.axis, xlab, fill.variable, colour,
             strip.text = element_text(size = 8),
             legend.position = "bottom",
             legend.key.size = unit(1,"line")) +
-      scale_colour_manual(guide = guide_legend(
-        label.theme = element_text(size = 6, angle = 0),
-        ncol = 2,
-        byrow = TRUE),
-        name = element_blank(),
-        values = colour)
+      scale_colour_manual(guide = if(show_legend) guide_legend(label.theme = element_text(size = 6, angle = 0), ncol = 2, byrow = TRUE) else FALSE,
+                          name = element_blank(),
+                          values = if(!is.null(fill_variable)) colour else "#8C8C8C")
 
-  } else{
-
-    Coefficient_pvalue_plot <- ggplot(data = h2.results, aes(x = h2.results %>% .[[x.axis]] ,
-                                                             y = Z_score_logP)) +
-      geom_point(aes(colour = h2.results %>%
-                       .[[fill.variable]]),
-                 shape = 19, size = 1.5) +
-      geom_point(data = subset(h2.results, Z_score_logP >= pvalue.cutoff),
-                 aes(x = subset(h2.results, Z_score_logP >= pvalue.cutoff) %>% .[[x.axis]]),
-                 shape = 1, size = 1.5, stroke = 0.75) +
-      geom_hline(aes(yintercept = pvalue.cutoff), linetype = "77", size = 0.6) + # Bonferroni correct for number of tests
-      facet_grid(facets = GWAS ~ .) +
-      labs(x = xlab, y = expression("Coefficient P-value (-log"[1][0]~"p)"), title = "") +
-      theme_bw() +
-      theme(axis.title = element_text(size = 8, face = "bold"),
-            axis.text.x = element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
-            strip.text = element_text(size = 6),
-            legend.position = "none",
-            legend.key.size = unit(1,"line")) +
-      scale_colour_manual(guide = FALSE,
-        name = element_blank(),
-        values = colour)
-
-  }
-
-  return(Coefficient_pvalue_plot)
+      return(Coefficient_pvalue_plot)
 
 }
 
