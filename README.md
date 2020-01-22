@@ -50,9 +50,9 @@ Script | Description | Author(s)
 - For a short overview of the various baseline models, please refer to: https://data.broadinstitute.org/alkesgroup/LDSCORE/readme_baseline_versions
 - For a detailed overview of the various baselines, please refer to [LDSC_Baseline_Models.xlsx](misc/LDSC_Baseline_Models.xlsx).
 - **IMPORTANT:** All baseline models, except baseline v1.2, are aligned to GRCh37. Baseline v1.2, however, is aligned to GRCh38. This is important, as most sumstat.gz files are generated from summary statistic files based on GRCh37 co-ordinates. 
-        - According to the following [thread](https://groups.google.com/forum/#!topic/ldsc_users/_wIQrqK57Nc), running GRCh37-based summary statistics with the GRCh38-based baseline v1.2 model should not make much of a difference to the outputted estimates. There is, however, a big difference between running with v1.1 (GRCh37-based) or v1.2. 
-        - Until conversion of summary stats files from GRCh37 to GRCh38 has occurred, it is recommended to run with baseline v1.2 (despite it being GRCh38 based).  
-        - If users to encounter a GRCh37-based GWAS, [functions](R/GWAS_formatting_functions.R) are available for GWAS liftover to GRCh38.
+    - According to the following [thread](https://groups.google.com/forum/#!topic/ldsc_users/_wIQrqK57Nc), running GRCh37-based summary statistics with the GRCh38-based baseline v1.2 model should not make much of a difference to the outputted estimates. There is, however, a big difference between running with v1.1 (GRCh37-based) or v1.2. 
+    - Until conversion of summary stats files from GRCh37 to GRCh38 has occurred, it is recommended to run with baseline v1.2 (despite it being GRCh38 based).  
+    - If users to encounter a GRCh37-based GWAS, [functions](R/GWAS_formatting_functions.R) are available for GWAS liftover to GRCh38.
 
 ### Available GWASs
 - Available GWASs on our server can be found in the following directory: `/data/LDScore/GWAS/`
