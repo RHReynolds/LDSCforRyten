@@ -4,7 +4,7 @@
 3. [Scripts](#scripts)
 4. [Reference files](#reference_files)
 
-S-LDSC scripts for use on MR server. This will only run on the MR server, as some of the arguments are hard-coded directory paths. If user wishes to use the package locally, change the appropriate arguments listed in `get_LDSC_fixed_args` and `Create_GWAS_df` functions found in [LDSC_Pipeline_Functions.R](R/LDSC_Pipeline_Functions.R), as well as the `creating_baseline_df` function found in [LDSC_Creatingannot_Functions.R](R/LDSC_Creatingannot_Functions.R).
+S-LDSC scripts for use on MR server. This will only run on the MR server, as some of the arguments are hard-coded directory paths. If user wishes to use the package locally, clone the package into your own server and change the appropriate arguments listed in `get_LDSC_fixed_args` and `Create_GWAS_df` functions found in [LDSC_Pipeline_Functions.R](R/LDSC_Pipeline_Functions.R), as well as the `creating_baseline_df` function found in [LDSC_Creatingannot_Functions.R](R/LDSC_Creatingannot_Functions.R).
 
 Scripts make use of the command line tool `ldsc`. For more information on S-LDSC, please refer to: 
 - https://github.com/bulik/ldsc/wiki
