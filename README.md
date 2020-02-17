@@ -4,7 +4,7 @@
 3. [Scripts](#scripts)
 4. [Reference files](#reference_files)
 
-S-LDSC scripts for use on MR server. This will only run on the MR server, as some of the arguments are hard-coded directory paths. If user wishes to use the package locally, change the appropriate arguments listed in `get_LDSC_fixed_args` and `Create_GWAS_df` functions found in [LDSC_Pipeline_Functions.R](R/LDSC_Pipeline_Functions.R), as well as the `creating_baseline_df` function found in [LDSC_Creatingannot_Functions.R](R/LDSC_Creatingannot_Functions.R).
+S-LDSC scripts for use on MR server. **This will only run on the MR server**, as some of the arguments are hard-coded directory paths. If user wishes to use the package locally, clone the package into your own server and change the appropriate arguments listed in `get_LDSC_fixed_args` and `Create_GWAS_df` functions found in [LDSC_Pipeline_Functions.R](R/LDSC_Pipeline_Functions.R), as well as the `creating_baseline_df` function found in [LDSC_Creatingannot_Functions.R](R/LDSC_Creatingannot_Functions.R).
 
 Scripts make use of the command line tool `ldsc`. For more information on S-LDSC, please refer to: 
 - https://github.com/bulik/ldsc/wiki
@@ -16,10 +16,8 @@ To use, install from github. This can be done using the following lines of code:
 ``` r
 install.packages("devtools")
 library(devtools)
-install_github("RHReynolds/LDSCforRyten", auth_token = "")
+install_github("RHReynolds/LDSCforRyten")
 ```
-
-As this is currently a private repository, you will have to generate a [personal access token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line), and insert this into the ```auth_token``` argument. **Remember to save this token, as you may need it to access other private repositories.**
 
 ## Running S-LDSC <a name="running"></a>
 Running S-LDSC can be divided into the following steps.
@@ -50,9 +48,9 @@ Script | Description | Author(s)
 - For a short overview of the various baseline models, please refer to: https://data.broadinstitute.org/alkesgroup/LDSCORE/readme_baseline_versions
 - For a detailed overview of the various baselines, please refer to [LDSC_Baseline_Models.xlsx](misc/LDSC_Baseline_Models.xlsx).
 - **IMPORTANT:** All baseline models, except baseline v1.2, are aligned to GRCh37. Baseline v1.2, however, is aligned to GRCh38. This is important, as most sumstat.gz files are generated from summary statistic files based on GRCh37 co-ordinates. 
-        - According to the following [thread](https://groups.google.com/forum/#!topic/ldsc_users/_wIQrqK57Nc), running GRCh37-based summary statistics with the GRCh38-based baseline v1.2 model should not make much of a difference to the outputted estimates. There is, however, a big difference between running with v1.1 (GRCh37-based) or v1.2. 
-        - Until conversion of summary stats files from GRCh37 to GRCh38 has occurred, it is recommended to run with baseline v1.2 (despite it being GRCh38 based).  
-        - If users to encounter a GRCh37-based GWAS, [functions](R/GWAS_formatting_functions.R) are available for GWAS liftover to GRCh38.
+    - According to the following [thread](https://groups.google.com/forum/#!topic/ldsc_users/_wIQrqK57Nc), running GRCh37-based summary statistics with the GRCh38-based baseline v1.2 model should not make much of a difference to the outputted estimates. There is, however, a big difference between running with v1.1 (GRCh37-based) or v1.2. 
+    - Until conversion of summary stats files from GRCh37 to GRCh38 has occurred, it is recommended to run with baseline v1.2 (despite it being GRCh38 based).  
+    - If users to encounter a GRCh37-based GWAS, [functions](R/GWAS_formatting_functions.R) are available for GWAS liftover to GRCh38.
 
 ### Available GWASs
 - Available GWASs on our server can be found in the following directory: `/data/LDScore/GWAS/`
