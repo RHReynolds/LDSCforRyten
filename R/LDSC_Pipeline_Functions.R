@@ -16,56 +16,72 @@
 #'   entered with a comma separator without any spaces.
 #' @param Fixed_Arguments List of fixed arguments. This can be created using the
 #'   get_LDSC_fixed_args() function.
+#' @param cores integer. Number of cores to parallelise across. Default = 1.
 #'
 #' @return Will run LDscore script for all annotations and chromosomes.
 #' @export
 #'
 
-Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL){
+Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, cores = 1){
+
+  library(doParallel)
+  library(foreach)
+
+  # Run in parallel
+  cl <- makeCluster(cores)
+
+  # Register clusters
+  registerDoParallel(cl)
+  getDoParWorkers()
 
   # Arguments
   fixed_args <- Fixed_Arguments
   current_dir <- paste0(Annotation_Basedir, Annot_name, "/")
 
   # Loop for annotation subcategories
-  for(i in seq_along(Annotation_Subcategories)){
+  foreach(i = 1:length(Annotation_Subcategories),
+          .verbose = TRUE,
+          .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
 
-    annot_prefix <- paste0(Annotation_Basedir, Annot_name, "/", Annotation_Subcategories[i], "/", Annotation_Subcategories[i])
-    out_prefix <- paste0(Annotation_Subcategories[i], ".")
+            annot_prefix <- paste0(Annotation_Basedir, Annot_name, "/", Annotation_Subcategories[i], "/", Annotation_Subcategories[i])
+            out_prefix <- paste0(Annotation_Subcategories[i], ".")
 
-    # Loop for chromsomes within annotation subcategories
-    for(CHR in 1:22){
+            # Loop for chromsomes within annotation subcategories
+            for(CHR in 1:22){
 
-      # Print annotation and chromosome for tracking of progress
-      print(str_c("Annotation: ", Annotation_Subcategories[i], ", CHR: ", CHR))
+              # Print annotation and chromosome for tracking of progress
+              print(str_c("Annotation: ", Annotation_Subcategories[i], ", CHR: ", CHR))
 
-      # Creating necessary sub arguments with chromosome number attached
-      refLD_chr <- paste0(fixed_args$refLD_basedir, "1000G.EUR.QC.", CHR)
-      annot_chr <- paste0(annot_prefix, ".", CHR,".annot.gz")
-      out_chr <- paste0(out_prefix, CHR)
-      printsnps_chr <- paste0(fixed_args$printsnps_basedir, "SNPsinBaselinel2ld.", CHR, ".snp")
+              # Creating necessary sub arguments with chromosome number attached
+              refLD_chr <- paste0(fixed_args$refLD_basedir, CHR)
+              annot_chr <- paste0(annot_prefix, ".", CHR,".annot.gz")
+              out_chr <- paste0(out_prefix, CHR)
+              printsnps_chr <- paste0(fixed_args$printsnps_basedir, "SNPsinBaselinel2ld.", CHR, ".snp")
 
-      # Creating entire argument
-      LDscoreARG <- paste0(" ", fixed_args$ldsc,
-                           " --l2 --bfile ", refLD_chr,
-                           " --ld-wind-cm 1",
-                           " --annot ", annot_chr,
-                           " --out ", out_chr,
-                           " --print-snps ", printsnps_chr)
+              # Creating entire argument
+              LDscoreARG <- paste0(" ", fixed_args$ldsc,
+                                   " --l2 --bfile ", refLD_chr,
+                                   " --ld-wind-cm 1",
+                                   " --annot ", annot_chr,
+                                   " --out ", out_chr,
+                                   " --print-snps ", printsnps_chr)
 
-      print(LDscoreARG)
+              print(LDscoreARG)
 
-      # Running command
-      system2(command = "python", args = LDscoreARG)
+              # Running command
+              system2(command = "python", args = LDscoreARG)
 
-    }
+            }
 
-  }
+          }
+
+  # Stop cluster
+  stopCluster(cl)
 
   # Move results to appropriate directories
   for(i in seq_along(Annotation_Subcategories)){
 
-    list.of.files <- list.files(current_dir, paste0(Annotation_Subcategories[i], "."), full.names = T)
+    list.of.files <- list.files(current_dir, paste0(Annotation_Subcategories[i], "\\."), full.names = T)
     new.location <- paste0(Annotation_Basedir, Annot_name, "/", Annotation_Subcategories[i], "/")
 
     file.copy(list.of.files, new.location)
@@ -73,7 +89,6 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
     file.remove(list.of.files)
 
   }
-
 
 }
 
@@ -100,12 +115,23 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
 #'   using the Create_GWAS_df() function. Columns should include: Full.paths
 #'   (full paths to GWAS), Original.name (original name of sumstat.gz file),
 #'   Output.prefix (alternative output name).
+#' @param cores integer. Number of cores to parallelise across. Default = 1.
 #'
 #' @return Will run heritability script for all annotations and GWASs.
 #' @export
 #'
 
-Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, GWAS_df = NULL){
+Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, GWAS_df = NULL, cores = 1){
+
+  library(doParallel)
+  library(foreach)
+
+  # Run in parallel
+  cl <- makeCluster(cores)
+
+  # Register clusters
+  registerDoParallel(cl)
+  getDoParWorkers()
 
   # Arguments
   fixed_args <- Fixed_Arguments
@@ -122,40 +148,47 @@ Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotatio
   }
 
   # Loop for annotation subcategories
-  for(i in seq_along(Annotation_Subcategories)){
-
-    annot_prefix <- paste0(Annotation_Basedir, Annot_name, "/", Annotation_Subcategories[i], "/", Annotation_Subcategories[i], ".")
-    out_suffix <- paste0(Annotation_Subcategories[i])
-
-    # Loop for GWASs
-    for(j in 1:nrow(GWAS_df)){
-
-      # Creating necessary sub arguments
-      h2 <- as.character(GWAS_df$Full.paths[j])
-      out_prefix <- as.character(GWAS_df$Output.prefix[j])
-
-      # Creating entire argument
-      H2ARG <- paste0(" ", fixed_args$ldsc,
-                      " --h2 ", h2,
-                      " --w-ld-chr ", fixed_args$regression_weights,
-                      " --ref-ld-chr ", annot_prefix, ",", fixed_args$baseline_annot_path,
-                      " --overlap-annot ",
-                      " --frqfile-chr ", fixed_args$freqfile,
-                      " --out ", out_prefix, "_", Annot_name, "_", fixed_args$baseline_model_name, "baseline_", out_suffix, # baseline_model_name to indicate which one is in use
-                      " --print-coefficients ")
+  foreach(i = 1:length(Annotation_Subcategories),
+          .verbose = TRUE,
+          .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
 
 
-      # Print annotation and chromosome for tracking of progress
-      print(str_c("Annotation: ", Annotation_Subcategories[i], ", GWAS: ", out_prefix))
+            annot_prefix <- paste0(Annotation_Basedir, Annot_name, "/", Annotation_Subcategories[i], "/", Annotation_Subcategories[i], ".")
+            out_suffix <- paste0(Annotation_Subcategories[i])
 
-      print(H2ARG)
+            # Loop for GWASs
+            for(j in 1:nrow(GWAS_df)){
 
-      # Running command
-      system2(command = "python", args = H2ARG)
+              # Creating necessary sub arguments
+              h2 <- as.character(GWAS_df$Full.paths[j])
+              out_prefix <- as.character(GWAS_df$Output.prefix[j])
 
-    }
+              # Creating entire argument
+              H2ARG <- paste0(" ", fixed_args$ldsc,
+                              " --h2 ", h2,
+                              " --w-ld-chr ", fixed_args$regression_weights,
+                              " --ref-ld-chr ", annot_prefix, ",", fixed_args$baseline_annot_path,
+                              " --overlap-annot ",
+                              " --frqfile-chr ", fixed_args$freqfile,
+                              " --out ", out_prefix, "_", Annot_name, "_", fixed_args$baseline_model_name, "baseline_", out_suffix, # baseline_model_name to indicate which one is in use
+                              " --print-coefficients ")
 
-  }
+
+              # Print annotation and chromosome for tracking of progress
+              print(str_c("Annotation: ", Annotation_Subcategories[i], ", GWAS: ", out_prefix))
+
+              print(H2ARG)
+
+              # Running command
+              system2(command = "python", args = H2ARG)
+
+            }
+
+
+          }
+
+  # Stop cluster
+  stopCluster(cl)
 
   # Move results to appropriate directories
   list.of.files.results <- list.files(current_dir, ".results", full.names = T)
@@ -230,7 +263,7 @@ get_LDSC_fixed_args <- function(Baseline_model = NULL){
 
   # Fixed paths to python programme and reference files
   fixed_args$ldsc <- "/tools/LDScore-master/ldsc.py"
-  fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/1000G_EUR_Phase3_plink/"
+  fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/1000G_EUR_Phase3_plink/1000G.EUR.QC."
   fixed_args$regression_weights <- "/data/LDScore/Reference_Files/weights_hm3_no_hla/weights."
   fixed_args$freqfile <- "/data/LDScore/Reference_Files/1000G_Phase3_frq/1000G.EUR.QC."
 
@@ -249,7 +282,7 @@ get_LDSC_fixed_args <- function(Baseline_model = NULL){
     if (fixed_args$baseline_model_name == "53") {
       # Need to overwrite refLD path and weights path, as v1.2 is aligned to GRCh38 and therefore cannot use original reference files.
       fixed_args$baseline_annot_path <- "/data/LDScore/Reference_Files/GRCh38/baseline_v1.2/baseline."
-      fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/GRCh38/plink_files/"
+      fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/GRCh38/plink_files/1000G.EUR.hg38."
       fixed_args$printsnps_basedir <- "/data/LDScore/Reference_Files/GRCh38/baseline_v1.2/SNPsinBaselinel2ldscore/"
       fixed_args$regression_weights <- "/data/LDScore/Reference_Files/GRCh38/weights/weights.hm3_noMHC."
     }

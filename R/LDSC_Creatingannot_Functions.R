@@ -84,48 +84,49 @@ creating_baseline_df <- function(baseline_model = c("53", "75", "76", "86", "97"
 #'   start BP for search.
 #' @param end_col Column name for column in inputted dataframes referencing end
 #'   BP.
+#' @param cores integer. Number of cores to parallelise across. Default = 2.
 #'
 #' @return List of dataframes with SNPs overlapping between input dataframes and
 #'   query genomic ranges object.
 #' @export
 #'
 
-overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
+overlap_annot_list <- function (list, query_GR, seqname_col, start_col, end_col, cores = 2) {
 
-  for(i in 1:length(list)){
+  library(doParallel)
+  library(foreach)
 
-    print(i)
-    annotation <- names(list)[i]
+  # Run in parallel
+  cl <- makeCluster(cores)
 
-    # Convert df to GRanges object
-    Subject_GR <-
-      list[[i]] %>%
-      df2GRanges(seqname_col = seqname_col, start_col = start_col, end_col = end_col)
+  # Register clusters
+  registerDoParallel(cl)
+  getDoParWorkers()
 
-    # Find overlaps
-    overlap <- as.data.frame(findOverlaps(query_GR, Subject_GR))
+  # Run the cluster
+  master_list <- foreach(i = 1:length(list),
+                         .verbose = TRUE,
+                         .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
+                           annotation <- names(list)[i]
+                           Subject_GR <-
+                             list[[i]] %>%
+                             LDSCforRyten::df2GRanges(seqname_col = seqname_col,
+                                                      start_col = start_col,
+                                                      end_col = end_col)
+                           overlap <- as.data.frame(findOverlaps(query_GR, Subject_GR))
+                           hits <- cbind(as.data.frame(query_GR)[overlap$queryHits, 6],
+                                         as.data.frame(Subject_GR)[overlap$subjectHits, ])
+                           colnames(hits)[1] <- c("SNP")
 
-    # Create dataframe of overlaps between query and subject GRanges objects
-    hits <- cbind(as.data.frame(query_GR)[overlap$queryHits,6], as.data.frame(Subject_GR)[overlap$subjectHits,])
-    colnames(hits)[1] <- c("SNP")
+                           hits %>%
+                             dplyr::mutate(Binary = 1)
+                         }
 
-    # Add Binary column with 1 to all hits
-    hits <- hits %>%
-      dplyr::mutate(Binary = 1)
+  # Stop cluster
+  stopCluster(cl)
 
-    if(i == 1){
-      Master.list <- list(hits)
-      List.name <- annotation
-    } else{
-      Master.list <- c(Master.list, list(hits))
-      List.name <- c(List.name, annotation)
-    }
-
-  }
-
-  names(Master.list) <- List.name
-
-  return(Master.list)
+  names(master_list) <- names(list)
+  return(master_list)
 
 }
 
@@ -141,6 +142,7 @@ overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
 #'   those SNPs that were found to overlap the baseline model using the
 #'   overlap_annot_list() function.
 #' @param BM Baseline model with columns: CHR, BP, SNP, CM.
+#' @param cores integer. Number of cores to parallelise across. Default = 2.
 #'
 #' @return List of annotations with all SNPs present in the baseline model, in
 #'   addition to a column distinguishing between annotation SNPs present in the
@@ -148,32 +150,36 @@ overlap_annot_list <- function(list, query_GR, seqname_col, start_col, end_col){
 #' @export
 #'
 
-overlap_annot_hits_w_baseline <- function(list_of_annotations, BM){
+overlap_annot_hits_w_baseline <- function(list_of_annotations, BM, cores = 2){
 
-  for(i in 1:length(list_of_annotations)){
+  library(doParallel)
+  library(foreach)
 
-    df <- list_of_annotations[[i]] %>%
-      dplyr::select(SNP, Binary) %>%
-      dplyr::distinct(SNP, .keep_all = TRUE)
-    df <- BM %>%
-      left_join(df[,c("SNP", "Binary")], by = c("SNP"))
-    df[is.na(df)] <- 0
+  # Run in parallel
+  cl <- makeCluster(cores)
 
-    annotation <- names(list_of_annotations)[i]
+  # Register clusters
+  registerDoParallel(cl)
+  getDoParWorkers()
 
-    if(i == 1){
-      Master.list <- list(df)
-      List.name <- annotation
-    } else{
-      Master.list <- c(Master.list, list(df))
-      List.name <- c(List.name, annotation)
-    }
+  master_list <- foreach(i = 1:length(list_of_annotations),
+                         .verbose = TRUE,
+                         .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
+                           df <- list_of_annotations[[i]] %>%
+                             dplyr::select(SNP, Binary) %>%
+                             dplyr::distinct(SNP, .keep_all = TRUE)
+                           df <- BM %>%
+                             left_join(df[,c("SNP", "Binary")], by = c("SNP"))
+                           df[is.na(df)] <- 0
 
-  }
+                           df
+                         }
 
-  names(Master.list) <- List.name
+  # Stop cluster
+  stopCluster(cl)
 
-  return(Master.list)
+  names(master_list) <- names(list_of_annotations)
+  return(master_list)
 
 }
 
