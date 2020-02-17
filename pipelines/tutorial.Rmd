@@ -4,6 +4,7 @@ author: "Regina H. Reynolds"
 date: "8/20/2019"
 output: 
   html_document:
+    code_folding: show
     theme: paper
     highlight: kate
     df_print: paged
@@ -31,7 +32,7 @@ predictions <- read_csv(file = "~/misc_projects/JuanBotia_G2PML/data/20190718_al
                 panel = str_replace_all(panel, "_", ".")) %>% 
   dplyr::select(-X1)
 
-knitr::opts_chunk$set(echo = F, message= F, warning = F)
+knitr::opts_chunk$set(echo = T, message= F, warning = F)
 ```
 
 # Background
@@ -45,7 +46,7 @@ knitr::opts_chunk$set(echo = F, message= F, warning = F)
 ## Restricting gene lists
 - Need to find the appropriate balance between prediction quality and the number of genes within each panel to run with LDSC.
 - If using cut-off of quality >= 1, the number of genes per panel is:
-```{r Prediction 1, echo = F}
+```{r Prediction 1}
 
 predictions %>% 
   dplyr::filter(quality >= 1) %>% 
@@ -54,7 +55,7 @@ predictions %>%
 
 ```
 - However, using cut-off of quality >= 0.8, the number of genes per panel is:
-```{r Prediction 0.8, echo = F}
+```{r Prediction 0.8}
 
 predictions %>% 
   dplyr::filter(quality >= 0.8) %>% 
@@ -66,7 +67,7 @@ predictions %>%
 - For this reason, will run with prediction >= 1.
 
 ## Creating gene lists
-```{r Creating gene lists, echo = T, eval = T}
+```{r Creating gene lists}
 
 filtered_predictions <- 
   # Create dataframe containing panels and gene predictions with quality >= 1
@@ -85,7 +86,7 @@ filtered_predictions <-
 ### Prediction quality >= 1
 - If we want to interpret later results of LDSC, it would be worthwhile knowing the overlap between various gene panel predictions. Using only those genes with a predicted quality of 1, the overlap in real numbers is displayed below.
 
-```{r UpsetR, fig.height = 8, out.width = '100%', echo = F, warning = F, fig.cap= "**Figure:** Overlap between panels with prediction quality >= 1. In the matrix (lower half of panel), rows represent the gene predictions for each panel and the columns represent their intersections, with a single black filled circle representing those genes that were not found to be part of an intersection, while black filled circles connected by a vertical line represent genes that intersect across panels. The size of each intersection is shown as a bar chart above the matrix (upper half of panel), while the size of each module is shown to the left of the matrix."}
+```{r UpsetR, fig.height = 8, out.width = '100%', warning = F, fig.cap= "**Figure:** Overlap between panels with prediction quality >= 1. In the matrix (lower half of panel), rows represent the gene predictions for each panel and the columns represent their intersections, with a single black filled circle representing those genes that were not found to be part of an intersection, while black filled circles connected by a vertical line represent genes that intersect across panels. The size of each intersection is shown as a bar chart above the matrix (upper half of panel), while the size of each module is shown to the left of the matrix."}
 
 # Create lists of genes to perform overlap
 gene_names_list <- setNames(filtered_predictions %>% 
@@ -105,7 +106,7 @@ upset(fromList(gene_names_list), sets = names(gene_names_list), keep.order = TRU
 - While knowing the actual number of genes overlapping between lists is useful, it is also good to have a relative measure of this. For this we can use the Jaccard index - defined as the intersection between two sets divided by the union of those two sets. In other words, you take into account the varying sizes of different modules and get a read out of the overlap between the two.
 - In the figure below, I've highlighted any overlaps with Jaccard > 0.05 i.e. greater than 5% overlap.
 
-```{r Jaccard pred 1, fig.height = 7, out.width = '100%', echo = F, warning = F, fig.cap= "**Figure:** Jaccard index between panels with prediction quality >= 1. Calculated by dividing the size of the intersection between two gene lists by the union of the two. Intersections with a Jaccard index > 0.05 (i.e. greater than 5% overlap) are highlighted within the plot, with Jaccard indices provided."}
+```{r Jaccard pred 1, fig.height = 7, out.width = '100%', warning = F, fig.cap= "**Figure:** Jaccard index between panels with prediction quality >= 1. Calculated by dividing the size of the intersection between two gene lists by the union of the two. Intersections with a Jaccard index > 0.05 (i.e. greater than 5% overlap) are highlighted within the plot, with Jaccard indices provided."}
 
 gom.self <- newGOM(gene_names_list, gene_names_list, genome.size = 21196)
 All.jaccard <- getMatrix(gom.self, "Jaccard")
@@ -130,7 +131,7 @@ corrplot(All.jaccard, method="color", col=col(100), cl.lim = c(0,1),
 - In addition to creating annotations with SNPs found within start and end site for transcription, we also include SNPs found within 100kb upstream and downstream of these sites (as in: https://www.ncbi.nlm.nih.gov/pubmed/29632380)
 - Given that we are not looking for critical cell types/tissues, then according to developer guidelines on baseline model (https://data.broadinstitute.org/alkesgroup/LDSCORE/readme_baseline_versions) we should use baseline LD v2.2 (97 annotations). This was published here: https://www.cell.com/ajhg/supplemental/S0002-9297(19)30053-9. And can be downloaded here: https://data.broadinstitute.org/alkesgroup/LDSCORE/
 
-```{r Creating annotations, eval = F, echo = T}
+```{r Creating annotations, eval = F}
 
 # The following snippet only needs to be run once.
 # Extract positional information and add 100kb window around genes within dataframe
@@ -205,7 +206,7 @@ read_excel(path = "/home/rreynolds/packages/LDSCforRyten/misc/LDSC_GWAS_details.
     - For more details, please refer to the `-h` flag.
 - For this tutorial, the following command was run: 
     
-```{bash LDSC arguments, eval = F, echo = T, tidy = T}
+```{bash LDSC arguments, eval = F, tidy = T}
 cd /home/rreynolds/data/Extra_Annotations/Juan2019.ML/
 
 # Prediction quality >= 1
@@ -225,7 +226,7 @@ prediction.100:Cerebral.vascular.malformations,prediction.100:Congenital.muscula
 
 ## Collecting the results
 
-```{r results, echo = T}
+```{r results}
 
 results <- LDSCforRyten::Assimilate_H2_results(path_to_results = list.files(path = "/home/rreynolds/data/Extra_Annotations/Juan2019.ML/Output/", 
                                                                             pattern = ".results", 
@@ -237,35 +238,31 @@ results <- LDSCforRyten::Assimilate_H2_results(path_to_results = list.files(path
                 GWAS = str_replace(GWAS, "ILAE.Epilepsy2018.Focal", "EPI Focal"),
                 GWAS = str_replace(GWAS, "ILAE.Epilepsy2018.Generalised", "EPI Generalised"),
                 GWAS = str_replace(GWAS, "PD2018.ex23andMe", "PD2018.ex23&Me"))
-```
 
-```{r results display, eval = T, echo = F}
 # # Saved once
 # write_csv(x = results %>%
 #   dplyr::select(-Enrichment.Lower.SE, -Enrichment.Upper.SE, -Log_P, -Coefficient.Lower.SE, -Coefficient.Upper.SE),
 #   path = "/home/rreynolds/misc_projects/JuanBotia_G2PML/results/20190802_LDSCsummary.csv")
 
-results %>% 
+# Only first three results shown
+results[1:3,] %>% 
   dplyr::filter(prediction_quality == "prediction.100") %>% 
-  dplyr::select(-Enrichment_p, -Enrichment.Lower.SE, -Enrichment.Upper.SE, -Log_P, -Coefficient.Lower.SE, -Coefficient.Upper.SE) %>% 
-  DT::datatable(rownames = FALSE,
-                options = list(scrollX = TRUE),
-                class = 'white-space: nowrap')
+  dplyr::select(-Enrichment_p, -Enrichment.Lower.SE, -Enrichment.Upper.SE, -Log_P, -Coefficient.Lower.SE, -Coefficient.Upper.SE)
 
 ```
 
-## Plotting the results and interpreting them
+## Plotting the results 
 - Multipe test corrections were applied as follows:
     - p < 0.05/(1 x 10) (as represented by black dashed line)
     - 1 reflects the number of GWAS i.e. 1 (keeping the multiple correction relatively lax at this point and not correcting for GWAS, although this would typically be done)
     - 10 reflects the number of panels tested
 - Presented in the figures is:
     - Coefficient p-value: tests whether an annotation category positively contributes to trait heritability, conditional upon the LDSC baseline model (which in this case is the 97 annotation model that accounts for genetic architecture, LD structures and sequence conservation) 
-```{r summary LDSC figure pred 1, fig.height = 12, out.width = '100%', echo = F, fig.cap = "***Figure:*** *Results of LDSC with prediction quality >= 1, ordered by co-efficient p-value. Black dashed line indicates the cut-off for Bonferroni significance.*"}
+    - Only plotted a few examples.
+```{r summary LDSC figure pred 1, out.width = '100%', echo = F, fig.cap = "***Figure:*** *Results of LDSC with prediction quality >= 1, ordered by co-efficient p-value. Black dashed line indicates the cut-off for Bonferroni significance.*"}
 
-ggplot(data = results %>% 
-         dplyr::filter(prediction_quality == "prediction.100") %>% 
-         dplyr::filter(!GWAS == "Anxiety2016.fs"), 
+ggplot(data = results[1:3,] %>% 
+         dplyr::filter(prediction_quality == "prediction.100"),
        aes(x = MarkerGenes::reorder_within(x = panel,
                                            by = Z_score_logP,
                                            within = GWAS,
@@ -287,36 +284,4 @@ ggplot(data = results %>%
   scale_colour_manual(guide = FALSE,
                       name = element_blank())
 
-# # Using enrichment p-value
-# ggplot(data = results %>% 
-#          dplyr::filter(prediction_quality == "prediction.100"), 
-#        aes(x = MarkerGenes::reorder_within(x = panel,
-#                                            by = -log10(Enrichment_p),
-#                                            within = GWAS,
-#                                            fun = max,
-#                                            desc = TRUE),
-#            y = -log10(Enrichment_p))) + 
-#   geom_point(aes(), shape = 19, size = 1.5) + 
-#   geom_hline(aes(yintercept = -log10(0.05/(1*10))), linetype = "77", size = 0.6) + 
-#   MarkerGenes::scale_x_reordered() +
-#   coord_flip() +
-#   facet_wrap(~ GWAS, scales = "free_y", ncol = 2) +
-#   labs(x = "", y = expression("Enrichment P-value (-log"[1][0]~"p)"), title = "") +
-#   theme_bw() + 
-#   theme(axis.title = element_text(size = 8, face = "bold"),
-#         axis.text.x = element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
-#         strip.text = element_text(size = 6),
-#         legend.position = "none",
-#         legend.key.size = unit(1,"line")) +
-#   scale_colour_manual(guide = FALSE,
-#                       name = element_blank())
-
-
 ```
-- Significant results include:
-    - Significant enrichment of intelligence heritability in intellectual disability panel. Biologically this makes a lot of sense. 
-    - Note that second highest co-efficient p-value (albeit insignificant) for intelligence is achieved with the genetic epilepsy syndromes panel. The Brainstorm paper (https://science.sciencemag.org/content/360/6395/eaap8757.long - see Figure 4) finds that epilepsy and focal epilepsy are negatively correlated with intelligence (epilepsy, correlation = -0.32, p-value = 0.000019239; focal epilepsy, correlation = -0.47, p-value = 0.0017). Generalised epilepsy was not genetically correlated with intelligence.
-    - Significant enrichment of SCZ heritability in genetic epilepsy syndromes panel. The Brainstorm paper finds no genetic correlation between all forms of epilepsy and schizophrenia (epilepsy, correlation = -0.03, p-value = 0.6798; focal epilepsy, correlation = -0.0102, p-value = 0.9114; generalised epilepsy, correlation = -0.0249, 0.6328). Note: these genetic correlations were performed with epilepsy GWAS summary stats from 2014 (as opposed to the newest epilepsy GWAS from 2018 that we are using).  
-    - Worth noting that with both the intelligence and SCZ GWASs, the top two panels are intellectual disability and genetic epilepsy syndromes. Given overlap between the two panels (30%) question is how much the overlap between these two panels drives the observed signal. 
-- Other observations:
-    - Looking at the ILAE epilepsy GWASs, the genetic epilepsy syndromes panel does not perform particularly well i.e. ranking by co-efficient p-value places the panel in the bottom 6 for each of the epilepsy GWASs.
