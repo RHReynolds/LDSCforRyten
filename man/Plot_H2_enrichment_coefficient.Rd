@@ -4,23 +4,30 @@
 \alias{Plot_H2_enrichment_coefficient}
 \title{Plot S-LDSC H2 enrichment & coefficient per annotation}
 \usage{
-Plot_H2_enrichment_coefficient(h2.results, x.axis, xlab, fill.variable,
-  colour, pvalue.cutoff)
+Plot_H2_enrichment_coefficient(
+  h2_results,
+  x_axis,
+  xlab,
+  fill_variable = NULL,
+  colour,
+  pvalue_cutoff
+)
 }
 \arguments{
-\item{h2.results}{Dataframe with overall heritability.}
+\item{h2_results}{Dataframe with overall heritability.}
 
-\item{x.axis}{What variable should be plotted on the x-axis.}
+\item{x_axis}{character. Variable to be plotted on the x-axis.}
 
-\item{xlab}{X-axis name in quotation marks.}
+\item{xlab}{character. X-axis name in quotation marks.}
 
-\item{fill.variable}{What variable should be used to determine the fill
-colour of bars/points.}
+\item{fill_variable}{character. Variable to be used to determine the fill
+colour of bars/points. Default is NULL.}
 
-\item{colour}{Vector with colours.}
+\item{colour}{character vector. If fill_variable not NULL then supply colours
+to be used.}
 
-\item{pvalue.cutoff}{P-value cutoff after multiple test correction for number
-of annotations and GWASs.}
+\item{pvalue_cutoff}{numeric. P-value cutoff after multiple test correction
+for number of annotations and GWASs.}
 }
 \value{
 Plot

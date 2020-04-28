@@ -1,14 +1,26 @@
 Package: LDSCforRyten
-Title: What the Package Does (One Line, Title Case)
+Title: Run LDSC on Ryten Lab Server.
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Regina",
+           family = "H. Reynolds",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = structure("YOUR-ORCID-ID", .Names = "ORCID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "regina.reynolds.16@ucl.ac.uk",
+           comment = structure("0000-0001-6470-7919", .Names = "ORCID"))
+Description: Wraparound package for running stratified LD score regression on the Ryten Lab server. Package can be run on other servers, provided that hard-coded arguments are changed.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
+Imports: 
+    BSgenome,
+    GenomicRanges,
+    dplyr,
+    tidyr,
+    doParallel,
+    foreach,
+    biomaRt,
+    stringr,
+    ggplot2,
+    R.utils,
+    optparse

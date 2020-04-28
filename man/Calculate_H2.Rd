@@ -5,9 +5,14 @@
 \title{Function to run LDSC heritability script for a number of annotations and
 GWASs.}
 \usage{
-Calculate_H2(Annotation_Basedir = NULL, Annot_name = NULL,
-  Annotation_Subcategories = NULL, Fixed_Arguments = NULL,
-  GWAS_df = NULL)
+Calculate_H2(
+  Annotation_Basedir = NULL,
+  Annot_name = NULL,
+  Annotation_Subcategories = NULL,
+  Fixed_Arguments = NULL,
+  GWAS_df = NULL,
+  cores = 1
+)
 }
 \arguments{
 \item{Annotation_Basedir}{Common directory wherein specific annotation is
@@ -22,6 +27,8 @@ entered with a comma separator without any spaces.}
 
 \item{Fixed_Arguments}{List of fixed arguments. This can be created using the
 get_LDSC_fixed_args() function.}
+
+\item{cores}{integer. Number of cores to parallelise across. Default = 1.}
 
 \item{GWAS}{Dataframe of GWAS to be run in the H2 estimation, as generated
 using the Create_GWAS_df() function. Columns should include: Full.paths

@@ -4,8 +4,13 @@
 \alias{AddGenePosDetails_RemoveXandYandMT}
 \title{Add gene positional details}
 \usage{
-AddGenePosDetails_RemoveXandYandMT(dataframe, columnToFilter, mart = 38,
-  attributes, filter)
+AddGenePosDetails_RemoveXandYandMT(
+  dataframe,
+  columnToFilter,
+  mart = 38,
+  attributes,
+  filter
+)
 }
 \arguments{
 \item{dataframe}{Dataframe with gene names.}

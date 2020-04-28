@@ -5,7 +5,7 @@
 \title{Map annotation SNPs overlapping the baseline model back to the full baseline
 model.}
 \usage{
-overlap_annot_hits_w_baseline(list_of_annotations, BM)
+overlap_annot_hits_w_baseline(list_of_annotations, BM, cores = 2)
 }
 \arguments{
 \item{list_of_annotations}{List of annotation dataframes containing only
@@ -13,6 +13,8 @@ those SNPs that were found to overlap the baseline model using the
 overlap_annot_list() function.}
 
 \item{BM}{Baseline model with columns: CHR, BP, SNP, CM.}
+
+\item{cores}{integer. Number of cores to parallelise across. Default = 2.}
 }
 \value{
 List of annotations with all SNPs present in the baseline model, in

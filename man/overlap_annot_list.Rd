@@ -5,7 +5,7 @@
 \title{Find the overlapping SNPs between a list of dataframes containing genomic
 regions and a genomic ranges object.}
 \usage{
-overlap_annot_list(list, query_GR, seqname_col, start_col, end_col)
+overlap_annot_list(list, query_GR, seqname_col, start_col, end_col, cores = 2)
 }
 \arguments{
 \item{list}{List with dataframes containing genomic regions to be overlapped
@@ -22,6 +22,8 @@ start BP for search.}
 
 \item{end_col}{Column name for column in inputted dataframes referencing end
 BP.}
+
+\item{cores}{integer. Number of cores to parallelise across. Default = 2.}
 }
 \value{
 List of dataframes with SNPs overlapping between input dataframes and

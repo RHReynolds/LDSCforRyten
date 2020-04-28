@@ -4,8 +4,13 @@
 \alias{Calculate_LDscore}
 \title{Function to calculate LD score for a number of annotations.}
 \usage{
-Calculate_LDscore(Annotation_Basedir = NULL, Annot_name = NULL,
-  Annotation_Subcategories = NULL, Fixed_Arguments = NULL)
+Calculate_LDscore(
+  Annotation_Basedir = NULL,
+  Annot_name = NULL,
+  Annotation_Subcategories = NULL,
+  Fixed_Arguments = NULL,
+  cores = 1
+)
 }
 \arguments{
 \item{Annotation_Basedir}{Common directory wherein specific annotation is
@@ -20,6 +25,8 @@ entered with a comma separator without any spaces.}
 
 \item{Fixed_Arguments}{List of fixed arguments. This can be created using the
 get_LDSC_fixed_args() function.}
+
+\item{cores}{integer. Number of cores to parallelise across. Default = 1.}
 }
 \value{
 Will run LDscore script for all annotations and chromosomes.
