@@ -130,6 +130,7 @@ corrplot(All.jaccard, method="color", col=col(100), cl.lim = c(0,1),
 - Annotations can be created using a number of functions available in the `LDSCforRyten` package.
 - In addition to creating annotations with SNPs found within start and end site for transcription, we also include SNPs found within 100kb upstream and downstream of these sites (as in: https://www.ncbi.nlm.nih.gov/pubmed/29632380)
 - Given that we are not looking for critical cell types/tissues, then according to developer guidelines on baseline model (https://data.broadinstitute.org/alkesgroup/LDSCORE/readme_baseline_versions) we should use baseline LD v2.2 (97 annotations). This was published here: https://www.cell.com/ajhg/supplemental/S0002-9297(19)30053-9. And can be downloaded here: https://data.broadinstitute.org/alkesgroup/LDSCORE/
+- **As we are using positional mapping to generate annotations, make sure the appropriate genome build is selected when extracting gene positions.** Bear in mind that baseline v1.2 is based on GRCh38, while all the remaining baselines are based on GRCh37.
 
 ```{r Creating annotations, eval = F}
 
