@@ -24,22 +24,19 @@
 
 Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, cores = 1){
 
-  library(doParallel)
-  library(foreach)
-
   # Run in parallel
-  cl <- makeCluster(cores)
+  cl <- parallel::makeCluster(cores)
 
   # Register clusters
-  registerDoParallel(cl)
-  getDoParWorkers()
+  doParallel::registerDoParallel(cl)
+  foreach::getDoParWorkers()
 
   # Arguments
   fixed_args <- Fixed_Arguments
   current_dir <- paste0(Annotation_Basedir, Annot_name, "/")
 
   # Loop for annotation subcategories
-  foreach(i = 1:length(Annotation_Subcategories),
+  foreach::foreach(i = 1:length(Annotation_Subcategories),
           .verbose = TRUE,
           .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
 
@@ -50,7 +47,7 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
             for(CHR in 1:22){
 
               # Print annotation and chromosome for tracking of progress
-              print(str_c("Annotation: ", Annotation_Subcategories[i], ", CHR: ", CHR))
+              print(stringr::str_c("Annotation: ", Annotation_Subcategories[i], ", CHR: ", CHR))
 
               # Creating necessary sub arguments with chromosome number attached
               refLD_chr <- paste0(fixed_args$refLD_basedir, CHR)
@@ -76,7 +73,7 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
           }
 
   # Stop cluster
-  stopCluster(cl)
+  parallel::stopCluster(cl)
 
   # Move results to appropriate directories
   for(i in seq_along(Annotation_Subcategories)){
@@ -111,7 +108,7 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
 #'   entered with a comma separator without any spaces.
 #' @param Fixed_Arguments List of fixed arguments. This can be created using the
 #'   get_LDSC_fixed_args() function.
-#' @param GWAS Dataframe of GWAS to be run in the H2 estimation, as generated
+#' @param GWAS_df Dataframe of GWAS to be run in the H2 estimation, as generated
 #'   using the Create_GWAS_df() function. Columns should include: Full.paths
 #'   (full paths to GWAS), Original.name (original name of sumstat.gz file),
 #'   Output.prefix (alternative output name).
@@ -123,15 +120,12 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
 
 Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, GWAS_df = NULL, cores = 1){
 
-  library(doParallel)
-  library(foreach)
-
   # Run in parallel
-  cl <- makeCluster(cores)
+  cl <- parallel::makeCluster(cores)
 
   # Register clusters
-  registerDoParallel(cl)
-  getDoParWorkers()
+  doParallel::registerDoParallel(cl)
+  foreach::getDoParWorkers()
 
   # Arguments
   fixed_args <- Fixed_Arguments
@@ -148,7 +142,7 @@ Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotatio
   }
 
   # Loop for annotation subcategories
-  foreach(i = 1:length(Annotation_Subcategories),
+  foreach::foreach(i = 1:length(Annotation_Subcategories),
           .verbose = TRUE,
           .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
 
@@ -175,7 +169,7 @@ Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotatio
 
 
               # Print annotation and chromosome for tracking of progress
-              print(str_c("Annotation: ", Annotation_Subcategories[i], ", GWAS: ", out_prefix))
+              print(stringr::str_c("Annotation: ", Annotation_Subcategories[i], ", GWAS: ", out_prefix))
 
               print(H2ARG)
 
@@ -188,7 +182,7 @@ Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotatio
           }
 
   # Stop cluster
-  stopCluster(cl)
+  parallel::stopCluster(cl)
 
   # Move results to appropriate directories
   list.of.files.results <- list.files(current_dir, ".results", full.names = T)
@@ -216,11 +210,11 @@ Create_GWAS_df <- function(){
 
   Full.paths <- paste0("/data/LDScore/GWAS/", GWAS.paths)
   Original.name <- GWAS.paths %>%
-    str_replace(".*/", "") %>%
-    str_replace(".sumstats.gz", "")
+    stringr::str_replace(".*/", "") %>%
+    stringr::str_replace(".sumstats.gz", "")
   Output.prefix <- GWAS.paths %>%
-    str_replace(".*/", "") %>%
-    str_replace(".sumstats.gz", "")
+    stringr::str_replace(".*/", "") %>%
+    stringr::str_replace(".sumstats.gz", "")
 
   # Change names of those .sumstats.gz files that include '_', so that output name works with Assimilate_H2_results() function
   # (i.e. provides full name of the GWAS, otherwise anything after an '_' would be removed)
@@ -237,8 +231,8 @@ Create_GWAS_df <- function(){
 
 
   GWAS_df <- data.frame(Full.paths) %>%
-    bind_cols(data.frame(Original.name)) %>%
-    bind_cols(data.frame(Output.prefix))
+    dplyr::bind_cols(data.frame(Original.name)) %>%
+    dplyr::bind_cols(data.frame(Output.prefix))
 
   return(GWAS_df)
 

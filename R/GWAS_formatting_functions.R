@@ -10,22 +10,20 @@
 
 liftover_hg19_to_hg38 <- function(GWAS, path_to_chain){
 
-  library(rtracklayer)
-  library(tidyverse)
-
   # Import chain file
   hg19_to_hg38 <- rtracklayer::import.chain(path_to_chain)
 
   # If GWAS CHR column does not have "chr" in name, add to allow liftover
-  if(!str_detect(GWAS$CHR[1], "chr")){
+  if(!stringr::str_detect(GWAS$CHR[1], "chr")){
 
     GWAS <- GWAS %>%
-      dplyr::mutate(CHR = str_c("chr", CHR))
+      dplyr::mutate(CHR = stringr::str_c("chr", CHR))
 
   }
 
   # Convert GWAS to GRanges object
-  GWAS_GR <- makeGRangesFromDataFrame(GWAS,
+  GWAS_GR <-
+    GenomicRanges::makeGRangesFromDataFrame(GWAS,
                                       keep.extra.columns = TRUE,
                                       ignore.strand = TRUE,
                                       seqinfo = NULL,
@@ -34,13 +32,14 @@ liftover_hg19_to_hg38 <- function(GWAS, path_to_chain){
                                       end.field = "BP",
                                       starts.in.df.are.0based = FALSE)
 
-  GWAS_hg38 <- liftOver(GWAS_GR, hg19_to_hg38) %>%
+  GWAS_hg38 <-
+    rtracklayer::liftOver(GWAS_GR, hg19_to_hg38) %>%
     unlist() %>%
     as.data.frame() %>%
     dplyr::rename(CHR = seqnames,
                   BP = start) %>%
     dplyr::select(-end, -width, -strand) %>%
-    dplyr::mutate(CHR = str_replace(CHR, "chr", ""))
+    dplyr::mutate(CHR = stringr::str_replace(CHR, "chr", ""))
 
   return(GWAS_hg38)
 
@@ -61,19 +60,16 @@ liftover_hg19_to_hg38 <- function(GWAS, path_to_chain){
 
 add_RS_to_GWAS <- function(GWAS, dbSNPref){
 
-  library(BSgenome)
-  library(GenomicRanges)
-
   # If GWAS CHR column has "chr" in name, remove
-  if(str_detect(GWAS$CHR[1], "chr")){
+  if(stringr::str_detect(GWAS$CHR[1], "chr")){
 
     GWAS <- GWAS %>%
-      dplyr::mutate(CHR = str_replace(CHR, "chr", ""))
+      dplyr::mutate(CHR = stringr::str_replace(CHR, "chr", ""))
 
   }
 
   # Convert GWAS to GRanges object
-  GWAS_GR <- makeGRangesFromDataFrame(GWAS,
+  GWAS_GR <- GenomicRanges::makeGRangesFromDataFrame(GWAS,
                                       keep.extra.columns = TRUE,
                                       ignore.strand = TRUE,
                                       seqinfo = NULL,
@@ -84,7 +80,7 @@ add_RS_to_GWAS <- function(GWAS, dbSNPref){
 
   # Genomic position object as dataframe with SNP locations converted to RS id.
   GWAS_GR <-
-    snpsByOverlaps(dbSNPref, GWAS_GR, minoverlap = 1L) %>%
+    BSgenome::snpsByOverlaps(dbSNPref, GWAS_GR, minoverlap = 1L) %>%
     # Note that the default value for minoverlap is 0 which means that, by default, in addition to the SNPs that are
     # located within the genomic regions specified thru the ranges argument, snpsByOverlaps also returns SNPs that are
     # adjacent to these regions. Use minoverlap=1L to omit these SNPs.
@@ -95,7 +91,7 @@ add_RS_to_GWAS <- function(GWAS, dbSNPref){
     GWAS_GR %>%
     dplyr::rename(SNP = RefSNP_id, CHR = seqnames, BP = pos) %>%
     # Remove all positions with more than one rs id attached
-    dplyr::mutate(CHR_BP = str_c(CHR, ":", BP)) %>%
+    dplyr::mutate(CHR_BP = stringr::str_c(CHR, ":", BP)) %>%
     dplyr::group_by(CHR_BP) %>%
     dplyr::filter(!any(row_number() > 1)) %>%
     dplyr::ungroup() %>%

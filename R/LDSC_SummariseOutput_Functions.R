@@ -23,28 +23,28 @@ Assimilate_H2_results <- function(path_to_results){
 
     GWAS <-
       path.name %>%
-      str_replace("/.*/", "") %>%
-      str_replace("\\.results", "") %>%
-      str_replace("_.*", "")
+      stringr::str_replace("/.*/", "") %>%
+      stringr::str_replace("\\.results", "") %>%
+      stringr::str_replace("_.*", "")
 
     annot_name <-
       path.name %>%
-      str_replace("/.*/", "") %>%
-      str_replace("\\.results", "") %>%
-      str_replace(".*_", "")
+      stringr::str_replace("/.*/", "") %>%
+      stringr::str_replace("\\.results", "") %>%
+      stringr::str_replace(".*_", "")
 
-    results <- read_delim(file = path.name, delim = "\t")
+    results <- readr::read_delim(file = path.name, delim = "\t")
 
     # Select relevant row referring to category of interest
     results <- results[1,] %>%
       dplyr::select(-Category) %>%
-      mutate(annot_name = annot_name, GWAS = GWAS)
+      dplyr::mutate(annot_name = annot_name, GWAS = GWAS)
 
     # If statement to ensure rows only bound after first iteration of loop
     if(i == 1){
       assimilated.results <- results
     } else{
-      assimilated.results <- bind_rows(assimilated.results, results)
+      assimilated.results <- dplyr::bind_rows(assimilated.results, results)
     }
 
   }
@@ -82,43 +82,43 @@ Assimilate_H2_results_multipleannot <- function(path_to_results){
 
     GWAS <-
       path.name %>%
-      str_replace("/.*/", "") %>%
-      str_replace("\\.results", "") %>%
-      str_replace("_.*", "")
+      stringr::str_replace("/.*/", "") %>%
+      stringr::str_replace("\\.results", "") %>%
+      stringr::str_replace("_.*", "")
 
     annot_name <-
       path.name %>%
-      str_replace("/.*/", "") %>%
-      str_replace("\\.results", "") %>%
-      str_replace(".*_", "")
+      stringr::str_replace("/.*/", "") %>%
+      stringr::str_replace("\\.results", "") %>%
+      stringr::str_replace(".*_", "")
 
     annot_name_split <-
       annot_name %>%
-      str_split(":") %>%
+      stringr::str_split(":") %>%
       .[[1]]
 
     Annot1 <- annot_name_split[1]
 
     Annot2 <- annot_name_split[2]
 
-    results <- read_delim(file = path.name, delim = "\t")
+    results <- readr::read_delim(file = path.name, delim = "\t")
 
     # Select relevant row referring to category of interest
     results.annot1 <- results[1,] %>%
       dplyr::select(-Category) %>%
-      mutate(Model = annot_name, Annotation.Subset = Annot1, GWAS = GWAS)
+      dplyr::mutate(Model = annot_name, Annotation.Subset = Annot1, GWAS = GWAS)
 
     results.annot2 <- results[2,] %>%
       dplyr::select(-Category) %>%
-      mutate(Model = annot_name, Annotation.Subset = Annot2, GWAS = GWAS)
+      dplyr::mutate(Model = annot_name, Annotation.Subset = Annot2, GWAS = GWAS)
 
     # If statement to ensure rows only bound after first iteration of loop
     if(i == 1){
       assimilated.results <- results.annot1
-      assimilated.results <- bind_rows(assimilated.results, results.annot2)
+      assimilated.results <- dplyr::bind_rows(assimilated.results, results.annot2)
     } else{
-      assimilated.results <- bind_rows(assimilated.results, results.annot1)
-      assimilated.results <- bind_rows(assimilated.results, results.annot2)
+      assimilated.results <- dplyr::bind_rows(assimilated.results, results.annot1)
+      assimilated.results <- dplyr::bind_rows(assimilated.results, results.annot2)
     }
 
   }
@@ -134,6 +134,9 @@ Assimilate_H2_results_multipleannot <- function(path_to_results){
 #'
 #' @param df Dataframe with .results output of LDSC, as created using the
 #'   Assimilate_H2_results() function.
+#' @param one_sided Specify whether one-sided or two-sided p-value required. If
+#'   NULL, two-sided test will be used. If one-sided preferred then specify
+#'   direction of one-sided test. "-" for negative, and "+" for positive.
 #'
 #' @return Dataframe with upper and lower bounds of enrichment SE, log
 #'   P(enrichment) and z-score p-value
@@ -184,7 +187,7 @@ Plot_H2_enrichment_coefficient <- function(h2_results, x_axis, xlab, fill_variab
   fill_variable <- vars(!!!fill_variable)
 
   h2_results <- h2_results %>%
-    dplyr::mutate(GWAS = str_replace(GWAS, "PD2018.ex23andMe", "PD2018 ex23andMe"))
+    dplyr::mutate(GWAS = stringr::str_replace(GWAS, "PD2018.ex23andMe", "PD2018 ex23andMe"))
 
   Enrichment <- ggplot(data = h2_results, aes(x = h2_results %>% .[[x_axis]],
                                               y = Enrichment)) +
@@ -336,12 +339,12 @@ Plot_H2_coefficient <- function(h2_results, x_axis, xlab, fill_variable = NULL, 
 
 convert_z_score<-function(z, one_sided=NULL) {
   if(is.null(one_sided)) {
-    pval = pnorm(-abs(z));
+    pval = stats::pnorm(-abs(z));
     pval = 2 * pval
   } else if(one_sided=="-") {
-    pval = pnorm(z);
+    pval = stats::pnorm(z);
   } else {
-    pval = pnorm(-z);
+    pval = stats::pnorm(-z);
   }
   return(pval);
 }

@@ -44,17 +44,17 @@ creating_baseline_df <- function(baseline_model = c("53", "75", "76", "86", "97"
   for(i in seq_along(file.paths)){
 
     # Read in file with only CHR, BP, SNP and CM columns
-    file <- read_delim(file.paths[i],
-                       delim = "\t",
-                       col_types = cols_only(CHR = col_integer(),
-                                 BP = col_integer(),
-                                 SNP = col_character(),
-                                 CM = col_double()))
+    file <- readr::read_delim(file.paths[i],
+                              delim = "\t",
+                              col_types = readr::cols_only(CHR = readr::col_integer(),
+                                                           BP = readr::col_integer(),
+                                                           SNP = readr::col_character(),
+                                                           CM = readr::col_double()))
 
     if(i == 1){
       Master <- file
     } else{
-      Master <- bind_rows(Master, file)
+      Master <- dplyr::bind_rows(Master, file)
     }
 
   }
@@ -93,18 +93,15 @@ creating_baseline_df <- function(baseline_model = c("53", "75", "76", "86", "97"
 
 overlap_annot_list <- function (list, query_GR, seqname_col, start_col, end_col, cores = 2) {
 
-  library(doParallel)
-  library(foreach)
-
   # Run in parallel
-  cl <- makeCluster(cores)
+  cl <- parallel::makeCluster(cores)
 
   # Register clusters
-  registerDoParallel(cl)
-  getDoParWorkers()
+  doParallel::registerDoParallel(cl)
+  foreach::getDoParWorkers()
 
   # Run the cluster
-  master_list <- foreach(i = 1:length(list),
+  master_list <- foreach::foreach(i = 1:length(list),
                          .verbose = TRUE,
                          .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
                            annotation <- names(list)[i]
@@ -113,7 +110,7 @@ overlap_annot_list <- function (list, query_GR, seqname_col, start_col, end_col,
                              LDSCforRyten::df2GRanges(seqname_col = seqname_col,
                                                       start_col = start_col,
                                                       end_col = end_col)
-                           overlap <- as.data.frame(findOverlaps(query_GR, Subject_GR))
+                           overlap <- as.data.frame(GenomicRanges::findOverlaps(query_GR, Subject_GR))
                            hits <- cbind(as.data.frame(query_GR)[overlap$queryHits, 6],
                                          as.data.frame(Subject_GR)[overlap$subjectHits, ])
                            colnames(hits)[1] <- c("SNP")
@@ -123,7 +120,7 @@ overlap_annot_list <- function (list, query_GR, seqname_col, start_col, end_col,
                          }
 
   # Stop cluster
-  stopCluster(cl)
+  parallel::stopCluster(cl)
 
   names(master_list) <- names(list)
   return(master_list)
@@ -152,31 +149,28 @@ overlap_annot_list <- function (list, query_GR, seqname_col, start_col, end_col,
 
 overlap_annot_hits_w_baseline <- function(list_of_annotations, BM, cores = 2){
 
-  library(doParallel)
-  library(foreach)
-
   # Run in parallel
-  cl <- makeCluster(cores)
+  cl <- parallel::makeCluster(cores)
 
   # Register clusters
-  registerDoParallel(cl)
-  getDoParWorkers()
+  doParallel::registerDoParallel(cl)
+  foreach::getDoParWorkers()
 
-  master_list <- foreach(i = 1:length(list_of_annotations),
+  master_list <- foreach::foreach(i = 1:length(list_of_annotations),
                          .verbose = TRUE,
                          .packages = c("LDSCforRyten", "tidyverse", "stringr")) %dopar% {
                            df <- list_of_annotations[[i]] %>%
                              dplyr::select(SNP, Binary) %>%
                              dplyr::distinct(SNP, .keep_all = TRUE)
                            df <- BM %>%
-                             left_join(df[,c("SNP", "Binary")], by = c("SNP"))
+                             dplyr::left_join(df[,c("SNP", "Binary")], by = c("SNP"))
                            df[is.na(df)] <- 0
 
                            df
                          }
 
   # Stop cluster
-  stopCluster(cl)
+  parallel::stopCluster(cl)
 
   names(master_list) <- names(list_of_annotations)
   return(master_list)
@@ -202,8 +196,6 @@ overlap_annot_hits_w_baseline <- function(list_of_annotations, BM, cores = 2){
 
 create_annot_file_and_export <- function(list_of_annotations, annot_basedir){
 
-  require(R.utils)
-
   annot_basedir <- as.character(annot_basedir)
 
   for(i in 1:length(list_of_annotations)){
@@ -211,7 +203,7 @@ create_annot_file_and_export <- function(list_of_annotations, annot_basedir){
     annotation.name <- names(list_of_annotations)[i]
     annotation <- list_of_annotations[[i]]
 
-    print(str_c("Annotation:", annotation.name))
+    print(stringr::str_c("Annotation:", annotation.name))
 
     # Make directory for output
     directory <- paste0(annot_basedir, "/", annotation.name)
@@ -233,13 +225,13 @@ create_annot_file_and_export <- function(list_of_annotations, annot_basedir){
       CHR.name <- names(annotation.split)[j]
       CHR.list <- annotation.split[[j]]
 
-      print(str_c("CHR:", CHR.name))
+      print(stringr::str_c("CHR:", CHR.name))
 
       file.name <- paste0(annot_basedir, "/", annotation.name, "/", annotation.name, ".", CHR.name, ".annot")
 
-      write_delim(as.data.frame(CHR.list), path= file.name, delim = "\t")
+      readr::write_delim(as.data.frame(CHR.list), path= file.name, delim = "\t")
 
-      gzip(file.name, overwrite = TRUE, remove = TRUE)
+      R.utils::gzip(file.name, overwrite = TRUE, remove = TRUE)
 
     }
 
@@ -296,8 +288,7 @@ keep_duplicates <- function(Dataframe, Column_w_duplicates){
 #'
 
 df2GRanges <- function(df, seqname_col, start_col, end_col ) {
-  require(GenomicRanges)
-  require(IRanges)
+
   gr <- GenomicRanges:: makeGRangesFromDataFrame(df,
                                                  keep.extra.columns = TRUE,
                                                  ignore.strand = TRUE,
@@ -358,40 +349,38 @@ AddBPWindow <- function(dataset, windowsize, mouse = NULL){
 
 AddGenePosDetails_RemoveXandYandMT <- function(dataframe, columnToFilter, mart = 38, attributes, filter){
 
-  require(biomaRt)
-
   if(mart != 38 && mart != 37) stop("Mart must be 38 or 37...")
 
   if(mart == 38){
 
-    ensembl_mart <- useMart(biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl")
+    ensembl_mart <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl")
 
   }else if(mart == 37){
 
     ensembl_mart <-
-      useMart(host = "grch37.ensembl.org", biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl")
+      biomaRt::useMart(host = "grch37.ensembl.org", biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl")
 
   }
 
   # Query genes as a vector
   genes <- dataframe %>% .[[columnToFilter]] %>% unique()
-  print(str_c("Number of unique genes to search: ", length(genes)))
+  print(stringr::str_c("Number of unique genes to search: ", length(genes)))
 
   # BioMart search
-  biomart_query <- getBM(attributes = attributes, filters = filter, values = genes , mart = ensembl_mart)
-  print(str_c("Number of matches found:", nrow(biomart_query)))
+  biomart_query <- biomaRt::getBM(attributes = attributes, filters = filter, values = genes , mart = ensembl_mart)
+  print(stringr::str_c("Number of matches found:", nrow(biomart_query)))
 
   # Create new data frame with positional information + remainder of the original dataframe
   # First requires creating join vector for the by argument in inner_join
   join_vector <- filter
   names(join_vector) <- columnToFilter
-  Merged <- inner_join(dataframe, biomart_query, by = join_vector)
+  Merged <- dplyr::inner_join(dataframe, biomart_query, by = join_vector)
 
   # Remove any rows with "CHR" or "HG" in chomosome_name
   CHR_grep <- Merged[grep("CHR", Merged$chromosome_name),]
-  Merged <- anti_join(Merged, CHR_grep)
+  Merged <- dplyr::anti_join(Merged, CHR_grep)
   HG_grep <- Merged[grep("HG", Merged$chromosome_name),]
-  Merged <- anti_join(Merged, HG_grep)
+  Merged <- dplyr::anti_join(Merged, HG_grep)
 
   # Remove X, Y and MT
   Merged <- Merged[!(Merged$chromosome_name=="X" | Merged$chromosome_name=="Y" |  Merged$chromosome_name=="MT" ),]

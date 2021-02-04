@@ -28,12 +28,12 @@ entered with a comma separator without any spaces.}
 \item{Fixed_Arguments}{List of fixed arguments. This can be created using the
 get_LDSC_fixed_args() function.}
 
-\item{cores}{integer. Number of cores to parallelise across. Default = 1.}
-
-\item{GWAS}{Dataframe of GWAS to be run in the H2 estimation, as generated
+\item{GWAS_df}{Dataframe of GWAS to be run in the H2 estimation, as generated
 using the Create_GWAS_df() function. Columns should include: Full.paths
 (full paths to GWAS), Original.name (original name of sumstat.gz file),
 Output.prefix (alternative output name).}
+
+\item{cores}{integer. Number of cores to parallelise across. Default = 1.}
 }
 \value{
 Will run heritability script for all annotations and GWASs.

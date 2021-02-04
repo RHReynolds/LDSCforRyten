@@ -9,6 +9,10 @@ Calculate_enrichment_SE_and_logP(df, one_sided)
 \arguments{
 \item{df}{Dataframe with .results output of LDSC, as created using the
 Assimilate_H2_results() function.}
+
+\item{one_sided}{Specify whether one-sided or two-sided p-value required. If
+NULL, two-sided test will be used. If one-sided preferred then specify
+direction of one-sided test. "-" for negative, and "+" for positive.}
 }
 \value{
 Dataframe with upper and lower bounds of enrichment SE, log
