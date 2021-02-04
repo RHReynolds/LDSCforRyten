@@ -17,6 +17,7 @@ output:
 library(corrplot)
 library(devtools)
 library(DT)
+library(here)
 library(ggplot2)
 library(GeneOverlap)
 library(LDSCforRyten)
@@ -190,9 +191,9 @@ GWASs <- as.character("AD2018,ALS2018,Anxiety2016.cc,Anxiety2016.fs,ILAE.Epileps
   str_split(",") %>% 
   unlist()
 
-read_excel(path = "/home/rreynolds/packages/LDSCforRyten/misc/LDSC_GWAS_details.xlsx") %>% 
+read_excel(path = here::here("misc", "LDSC_GWAS_details.xlsx")) %>% 
   dplyr::filter(Original_name %in% GWASs) %>% 
-  dplyr::select(-Full_paths, -Original_name) %>% 
+  dplyr::select(-contains("Full_paths"), -Original_name, -Notes) %>% 
   DT::datatable(rownames = FALSE,
                 options = list(scrollX = TRUE),
                 class = 'white-space: nowrap')
