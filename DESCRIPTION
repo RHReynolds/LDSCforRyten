@@ -1,6 +1,6 @@
 Package: LDSCforRyten
 Title: Run LDSC on Ryten Lab Server
-Version: 0.0.0.9000
+Version: 0.99.1
 Authors@R: 
     person(given = "Regina",
            family = "H. Reynolds",
