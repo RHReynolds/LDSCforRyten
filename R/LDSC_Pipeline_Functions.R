@@ -256,7 +256,7 @@ get_LDSC_fixed_args <- function(Baseline_model = NULL){
   fixed_args <- list()
 
   # Fixed paths to python programme and reference files
-  fixed_args$ldsc <- "/tools/LDScore-master/ldsc.py"
+  fixed_args$ldsc <- "/tools/ldsc/ldsc.py"
   fixed_args$refLD_basedir <- "/data/LDScore/Reference_Files/1000G_EUR_Phase3_plink/1000G.EUR.QC."
   fixed_args$regression_weights <- "/data/LDScore/Reference_Files/weights_hm3_no_hla/weights."
   fixed_args$freqfile <- "/data/LDScore/Reference_Files/1000G_Phase3_frq/1000G.EUR.QC."
