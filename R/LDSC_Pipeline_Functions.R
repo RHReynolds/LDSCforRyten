@@ -7,6 +7,8 @@
 #' $ANNOTATION_SUBCATEGORY refers to the subcategories within the annotation.
 #' Function should be run in the folder $ANNOT_NAME/
 #'
+#' @param Command Python command to use. Default is "python", assuming this
+#'   alias directs to python 2.7.
 #' @param Annotation_Basedir Common directory wherein specific annotation is
 #'   stored.
 #' @param Annot_name  Name of annotation. This should be written exactly as
@@ -22,7 +24,7 @@
 #' @export
 #'
 
-Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, cores = 1){
+Calculate_LDscore <- function(Command = "python", Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, cores = 1){
 
   # Run in parallel
   cl <- parallel::makeCluster(cores)
@@ -66,7 +68,7 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
               print(LDscoreARG)
 
               # Running command
-              system2(command = "python", args = LDscoreARG)
+              system2(command = Command, args = LDscoreARG)
 
             }
 
@@ -99,6 +101,8 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
 #' $ANNOTATION_SUBCATEGORY refers to the subcategories within the annotation.
 #' Function should be run in the folder $ANNOT_NAME/
 #'
+#' @param Command Python command to use. Default is "python", assuming this
+#'   alias directs to python 2.7.
 #' @param Annotation_Basedir Common directory wherein specific annotation is
 #'   stored.
 #' @param Annot_name  Name of annotation. This should be written exactly as
@@ -118,7 +122,7 @@ Calculate_LDscore <- function(Annotation_Basedir = NULL, Annot_name = NULL, Anno
 #' @export
 #'
 
-Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, GWAS_df = NULL, cores = 1){
+Calculate_H2 <- function(Command = "python", Annotation_Basedir = NULL, Annot_name = NULL, Annotation_Subcategories = NULL, Fixed_Arguments = NULL, GWAS_df = NULL, cores = 1){
 
   # Run in parallel
   cl <- parallel::makeCluster(cores)
@@ -174,7 +178,7 @@ Calculate_H2 <- function(Annotation_Basedir = NULL, Annot_name = NULL, Annotatio
               print(H2ARG)
 
               # Running command
-              system2(command = "python", args = H2ARG)
+              system2(command = Command, args = H2ARG)
 
             }
 
